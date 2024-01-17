@@ -24,11 +24,10 @@ public class LandmarksController {
     }
 
     @RequestMapping(path="", method = RequestMethod.GET)
-
     public String listLandmarks(){
         List<String> input = new ArrayList<>();
-        input.add("id");
-        return JSONProcessor.JSONParser(LandmarksAPI.searchForLandmarks("New York"), input) ;
+        input.add("id", "displayName");
+        return JSONProcessor.JSONParserMultiple(LandmarksAPI.searchForLandmarks("New York"), input).toString();
 
     }
 

@@ -26,7 +26,7 @@ public class LandmarksAPI {
             System.out.println("Response Body: " + response.body());
             return response.body();
         } catch (Exception var7) {
-            var7.printStackTrace();
+            System.out.println("Error Getting Response");
             return null;
         }
     }

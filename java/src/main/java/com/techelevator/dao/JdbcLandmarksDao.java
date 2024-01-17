@@ -22,6 +22,7 @@ public class JdbcLandmarksDao implements LandmarksDao {
         String sql = "SELECT * FROM landmarks;";
 
         try{
+
             //SqlRowSet results = jdbcTemplate.queryForRowSet(sql, )
 
         } catch (Exception ex){
