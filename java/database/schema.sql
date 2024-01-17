@@ -1,33 +1,42 @@
 
 DROP TABLE IF EXISTS users_itinerary, itinerary_landmarks;
 DROP TABLE IF EXISTS users, itinerary, landmarks;
-DROP SEQUENCE IF EXISTS seq_users_id, seq_itinerary_id;
+DROP SEQUENCE IF EXISTS seq_user_id, seq_itinerary_id;
 
 
 BEGIN TRANSACTION;
 
 
-CREATE SEQUENCE seq_users_id
+CREATE SEQUENCE seq_user_id
   INCREMENT BY 1
-  START WITH 2001
+  START WITH 1001
   NO MAXVALUE;
 
 CREATE TABLE users (
-	user_id int NOT NULL DEFAULT nextval('seq_users_id'),
+	user_id int NOT NULL DEFAULT nextval('seq_user_id'),
 	username varchar(50) NOT NULL UNIQUE,
 	password_hash varchar(200) NOT NULL,
 	role varchar(50) NOT NULL,
-	first_name varchar(50) NOT NULL,
-	last_name varchar(50) NOT NULL,
-	email varchar(50) NOT NULL,
-	emergency_contact int,
-	phone_number int,
+	
 	CONSTRAINT PK_user PRIMARY KEY (user_id)
 );
+--CREATE SEQUENCE seq_account_id
+--  INCREMENT BY 1
+--  START WITH 2001
+--  NO MAXVALUE;
+--
+--CREATE TABLE accounts(
+--	account_id int NOT NULL DEFAULT nextval('seq_account_id'),
+--	first_name varchar(50) NOT NULL,
+--	last_name varchar(50) NOT NULL,
+--	email varchar(50) NOT NULL,
+--	emergency_contact int,
+--	phone_number int,
+--);
 
 CREATE SEQUENCE seq_itinerary_id
   INCREMENT BY 1
-  START WITH 1001
+  START WITH 3001
   NO MAXVALUE;
 
 
@@ -42,14 +51,14 @@ CREATE TABLE itinerary(
 
 CREATE TABLE landmarks(
 	place_id varchar(250) NOT NULL,
-	landmark_name varchar(250) NOT NULL,
-	opening_time TIME,
-	closing_time TIME,
-	landmark_description TEXT,
-	tour_price int,
-	landmark_category varchar(50),
-	star_rating int,
-	location_address varchar,
+--	landmark_name varchar(250) NOT NULL,
+--	opening_time TIME,
+--	closing_time TIME,
+--	landmark_description TEXT,
+--	tour_price int,
+--	landmark_category varchar(50),
+--	star_rating int,
+--	location_address varchar,
 	CONSTRAINT PK_landmarks PRIMARY KEY (place_id)
 );
 

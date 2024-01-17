@@ -17,9 +17,16 @@ public class JdbcLandmarksDao implements LandmarksDao {
 
 
     @Override
-    public List<Landmarks> getLandmarks(String placeId) {
+    public List<Landmarks> getLandmarks() {
         List<Landmarks> landmarks = new ArrayList<>();
-        String sql = null;
+        String sql = "SELECT * FROM landmarks;";
+
+        try{
+            //SqlRowSet results = jdbcTemplate.queryForRowSet(sql, )
+
+        } catch (Exception ex){
+            System.out.println("Something went wrong");
+        }
 
         return landmarks;
     }
@@ -30,25 +37,27 @@ public class JdbcLandmarksDao implements LandmarksDao {
     }
 
     @Override
-    public Landmarks createLandmark(Landmarks newLandmark, String placeId) {
-        //Landmarks newLandmark = null;
+    public void createLandmark(String placeId) {
 
         String sql = "INSERT INTO landmarks\n" +
-                "(place_id, landmark_name, opening_time, closing_time, landmark_description, tour_price, landmark_category, star_rating, location_address)\n" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING place_id;";
+                "(place_id)\n" +
+                "VALUES (?);";
         try{
-            placeId = jdbcTemplate.queryForObject(sql, String.class, newLandmark.getPlaceId(), newLandmark.getLandmarkName(), newLandmark.getOpeningTime(),
-                    newLandmark.getClosingTime(), newLandmark.getLandmarkDescription(), newLandmark.getTourPriceRange(), newLandmark.getLandmarkCategory(),
-                    newLandmark.getStarRating(), newLandmark.getLocationAddress());
 
-            addLandmarkToLandmarks(placeId);
+            jdbcTemplate.update(sql, placeId);
 
 
         } catch (Exception ex){
             System.out.println("Something went wrong");
         }
-        return newLandmark;
+
+
+
     }
+
+//    private void addLandmarkToLandmarks(String placeId){
+//        String sql =
+//    }
 
     @Override
     public Landmarks updateLandmark(Landmarks landmark, String placeId) {
@@ -60,11 +69,11 @@ public class JdbcLandmarksDao implements LandmarksDao {
         return null;
     }
 
-    public Account mapRowToAccount(SqlRowSet result) {
-        Account account = new Account();
-        account.setUserId(result.getInt("user_id"));
-        account.setAccountId(result.getInt("account_id"));
-        account.setBalance(result.getDouble("balance"));
-        return account;
-    }
+//    public Landmarks mapRowToAccount(SqlRowSet result) {
+//        Landmarks account = new Landmarks();
+//        landmark.setUserId(result.getInt("user_id"));
+//        account.setAccountId(result.getInt("account_id"));
+//        account.setBalance(result.getDouble("balance"));
+//        return account;
+//    }
 }
