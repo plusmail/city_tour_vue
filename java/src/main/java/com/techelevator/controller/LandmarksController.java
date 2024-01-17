@@ -2,6 +2,7 @@ package com.techelevator.controller;
 
 import com.techelevator.dao.LandmarksDao;
 import com.techelevator.model.Landmarks;
+import com.techelevator.model.LandmarksResultList;
 import com.techelevator.services.JSONProcessor;
 import com.techelevator.services.LandmarksAPI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,10 @@ public class LandmarksController {
     }
 
     @RequestMapping(path="", method = RequestMethod.GET)
-    public String listLandmarks(){
-        List<String> input = new ArrayList<>();
-        input.add("id", "displayName");
-        return JSONProcessor.JSONParserMultiple(LandmarksAPI.searchForLandmarks("New York"), input).toString();
+    public LandmarksResultList listLandmarks(){
+        String city = "Dubai";
+
+        return JSONProcessor.JSONParserMultiple(LandmarksAPI.searchForLandmarks(city));
 
     }
 

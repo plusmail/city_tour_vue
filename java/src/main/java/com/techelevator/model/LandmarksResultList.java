@@ -1,5 +1,7 @@
 package com.techelevator.model;
 
+import java.util.List;
+
 public class LandmarksResultList {
 private List<LandmarkResult> places;
 

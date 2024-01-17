@@ -14,10 +14,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class JSONProcessor {
-    public static List<String> JSONParserMultiple(String input, List<String> requiredHeaders) {
+    public static LandmarksResultList JSONParserMultiple(String input) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             LandmarksResultList landmarks = mapper.readValue(input, LandmarksResultList.class);
+            return landmarks;
         } catch (Exception ex) {
             System.out.println("Error parsing API request");
         }
