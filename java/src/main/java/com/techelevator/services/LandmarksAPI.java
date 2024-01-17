@@ -1,39 +1,31 @@
 package com.techelevator.services;
 
-import com.techelevator.model.Landmarks;
-import org.jboss.logging.BasicLogger;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandlers;
 
 public class LandmarksAPI {
-    private static final String API_BASE_URL = "https://places.googleapis.com/v1/places";
-    private static final String API_KEY = "AIzaSyB3DzEl4eOx63tJTTcmByC3PccyAthJRyA";
+    public void GooglePlacesAPIClient() {
+    }
 
-    public static String listLandmarks(String city){
-        String line = "";
-        String search = city + " Landmarks";
-        Landmarks[] landmarks = null;
-        try{
-            String command =
-                    "curl -X POST -d '{  \"textQuery\" : \""+search+"\"}' -H 'Content-Type: application/json' -H 'X-Goog-Api-Key: AIzaSyB3DzEl4eOx63tJTTcmByC3PccyAthJRyA' -H 'X-Goog-FieldMask: places.id,places.displayName' 'https://places.googleapis.com/v1/places:searchText'";
-            Process process = new ProcessBuilder("",command).start();
+    public static String searchForLandmarks(String city) {
+        String searchTerm = city + " Things to do";
+        String apiKey = "AIzaSyB3DzEl4eOx63tJTTcmByC3PccyAthJRyA";
+        String requestBody = "{\"textQuery\" : \"" + searchTerm + "\"}";
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://places.googleapis.com/v1/places:searchText")).header("Content-Type", "application/json").header("X-Goog-Api-Key", apiKey).header("X-Goog-FieldMask", "places.id").POST(BodyPublishers.ofString(requestBody)).build();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder builder = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-                builder.append("\n");
-            }
-        }catch (Exception ex){
-            System.out.println("Error getting search results from CURL");;
+        try {
+            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+            System.out.println("Status Code: " + response.statusCode());
+            System.out.println("Response Body: " + (String)response.body());
+            return (String)response.body();
+        } catch (Exception var7) {
+            var7.printStackTrace();
+            return null;
         }
-        return line;
     }
 }

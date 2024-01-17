@@ -22,7 +22,7 @@ public class LandmarksController {
     @RequestMapping(path="", method = RequestMethod.GET)
 
     public String listLandmarks(){
-        return LandmarksAPI.listLandmarks("New York");
+        return LandmarksAPI.searchForLandmarks("New York");
     }
 
 
