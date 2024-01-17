@@ -23,8 +23,8 @@ public class LandmarksAPI {
         try {
             HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
             System.out.println("Status Code: " + response.statusCode());
-            System.out.println("Response Body: " + (String)response.body());
-            return (String)response.body();
+            System.out.println("Response Body: " + response.body());
+            return response.body();
         } catch (Exception var7) {
             var7.printStackTrace();
             return null;
