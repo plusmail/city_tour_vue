@@ -7,6 +7,8 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 
+
+
 public class LandmarksAPI {
     public void GooglePlacesAPIClient() {
     }
