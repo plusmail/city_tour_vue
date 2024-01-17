@@ -19,7 +19,7 @@ public class LandmarksController {
         landmarksDao.createLandmark(placeId);
     }
 
-    @RequestMapping(path="", method = RequestMethod.POST)
+    @RequestMapping(path="", method = RequestMethod.GET)
 
     public String listLandmarks(){
         return LandmarksAPI.listLandmarks("New York");
