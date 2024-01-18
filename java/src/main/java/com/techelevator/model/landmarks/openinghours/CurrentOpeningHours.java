@@ -8,7 +8,7 @@ public class CurrentOpeningHours {
 
     private String openNow;
 
-    private Periods periods;
+    private List<Periods> periods;
 
     private List<String> weekdayDescriptions;
 
@@ -20,11 +20,11 @@ public class CurrentOpeningHours {
         this.openNow = openNow;
     }
 
-    public Periods getPeriods() {
+    public List<Periods> getPeriods() {
         return periods;
     }
 
-    public void setPeriods(Periods periods) {
+    public void setPeriods(List<Periods> periods) {
         this.periods = periods;
     }
 
