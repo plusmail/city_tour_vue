@@ -1,9 +1,48 @@
 <template>
   <div id="capstone-app">
-    <div id="nav">
-      <router-link v-bind:to="{ name: 'home' }">Home</router-link>&nbsp;|&nbsp;
-      <router-link v-bind:to="{ name: 'logout' }" v-if="$store.state.token != ''">Logout</router-link>
-    </div>
+    <Menubar :model="items" />
+
     <router-view />
   </div>
 </template>
+
+<script>
+import Menubar from 'primevue/menubar';
+
+export default {
+  components: {
+    Menubar
+  },
+  data() {
+    return {
+      items: [
+        {
+          label: 'Home',
+          command: () => {
+            this.$router.push({ name: 'home' });
+          }
+        },
+        {
+          label: 'Logout',
+          command: () => {
+            this.$router.push({ name: 'logout' });
+          },
+          visible: this.$store.state.token !== ''
+        },
+        {
+          label: 'Login',
+          command: () => {
+            this.$router.push({ name: 'login' });
+          },
+          visible: this.$store.state.token === ''
+        }
+      ]
+    };
+  }
+};
+</script>
+
+<style>
+/* Additional styling if needed */
+</style>
+

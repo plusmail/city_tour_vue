@@ -1,32 +1,38 @@
 <template>
   <div id="register" class="text-center">
-    <form v-on:submit.prevent="register">
+    <form @submit.prevent="register">
       <h1>Create Account</h1>
       <div role="alert" v-if="registrationErrors">
         {{ registrationErrorMsg }}
       </div>
       <div class="form-input-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" v-model="user.username" required autofocus />
+        <InputText id="username" type="text" v-model="user.username" required autofocus placeholder="Username"/>
       </div>
       <div class="form-input-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" v-model="user.password" required />
+        <Password id="password" type="password" v-model="user.password" toggleMask required placeholder="Password"/>
       </div>
       <div class="form-input-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" v-model="user.confirmPassword" required />
+        <Password id="confirmPassword" type="password" v-model="user.confirmPassword" toggleMask required placeholder="Confirm Password"/>
       </div>
-      <button type="submit">Create Account</button>
-      <p><router-link v-bind:to="{ name: 'login' }">Already have an account? Log in.</router-link></p>
+      <Button type="submit" label="Create Account" />
+      <p>
+        <router-link :to="{ name: 'login' }">Already have an account? Log in.</router-link>
+      </p>
     </form>
   </div>
 </template>
 
 <script>
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
+import Password from 'primevue/password';
 import authService from '../services/AuthService';
 
 export default {
+  components: {
+    InputText,
+    Button
+  },
   data() {
     return {
       user: {

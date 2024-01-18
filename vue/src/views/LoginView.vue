@@ -1,33 +1,39 @@
 <template>
   <div id="login">
-    <form v-on:submit.prevent="login">
-      <h1 >Please Sign In</h1>
+    <form @submit.prevent="login">
+      <h1>Please Sign In</h1>
       <div role="alert" v-if="invalidCredentials">
         Invalid username and password!
       </div>
-      <div role="alert" v-if="this.$route.query.registration">
+      <div role="alert" v-if="$route.query.registration">
         Thank you for registering, please sign in.
       </div>
       <div class="form-input-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" v-model="user.username" required autofocus />
+        <InputText id="username" type="text" v-model="user.username" Placeholder="Username" required autofocus />
+      
+        <Password id="password" v-model="user.password" required feedback={false} toggleMask placeholder="Password" />
+
       </div>
-      <div class="form-input-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" v-model="user.password" required />
-      </div>
-      <button type="submit">Sign in</button>
+      <Button icon="pi pi-check" label="Sign In" aria-label="Sign In" />
       <p>
-      <router-link v-bind:to="{ name: 'register' }">Need an account? Sign up.</router-link></p>
+        <router-link :to="{ name: 'register' }">Need an account? Sign up.</router-link>
+      </p>
     </form>
   </div>
 </template>
 
 <script>
+import InputText from 'primevue/inputtext';
+import Password from 'primevue/password';
+import Button from 'primevue/button';
 import authService from "../services/AuthService";
 
 export default {
-  components: {},
+  components: {
+    InputText,
+    Password,
+    Button
+  },
   data() {
     return {
       user: {
@@ -60,11 +66,16 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .form-input-group {
   margin-bottom: 1rem;
 }
+
 label {
-  margin-right: 0.5rem;
+  margin-right: 0.5rem; 
+}
+#password{
+  margin-left: 0.5rem;
 }
 </style>

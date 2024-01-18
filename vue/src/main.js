@@ -3,6 +3,15 @@ import CapstoneApp from './App.vue'
 import { createStore } from './store'
 import router from './router'
 import axios from 'axios'
+import PrimeVue from 'primevue/config';
+import 'primevue/resources/themes/saga-blue/theme.css';
+import 'primevue/resources/primevue.min.css';
+import 'primeicons/primeicons.css';
+
+import InputText from "primevue/inputtext";
+import Button from 'primevue/button';
+import Password from 'primevue/password';
+
 
 /* sets the base url for server API communication with axios */
 axios.defaults.baseURL = import.meta.env.VITE_REMOTE_API;
@@ -25,6 +34,10 @@ if (currentToken) {
 const store = createStore(currentToken, currentUser);
 
 const app = createApp(CapstoneApp);
+app.component('Button', Button);
+app.component('Password', Password);
+app.component('InputText', InputText);
+app.use(PrimeVue);
 app.use(store);
 app.use(router);
 app.mount('#app');
