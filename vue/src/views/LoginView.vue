@@ -14,7 +14,7 @@
         <Password id="password" v-model="user.password" required feedback={false} toggleMask placeholder="Password" />
 
       </div>
-      <Button icon="pi pi-check" label="Sign In" aria-label="Sign In" />
+      <Button type="submit" icon="pi pi-check" label="Sign In" aria-label="Sign In" />
       <p>
         <router-link :to="{ name: 'register' }">Need an account? Sign up.</router-link>
       </p>
