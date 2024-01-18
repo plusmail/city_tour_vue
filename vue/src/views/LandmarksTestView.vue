@@ -25,7 +25,7 @@
     methods: {
       fetchLandmarks() {
         // Replace 'cityName' with the actual city name or a variable that holds the city name
-        LandmarkService.returnLandmarks('cityName')
+        LandmarkService.returnLandmarks('Dubai')
           .then(response => {
             if (response.status === 200) {
               this.landmarks = response.data.places;
@@ -35,6 +35,7 @@
             console.error('Error fetching landmarks:', error);
           });
       }
+
     }
   };
   </script>

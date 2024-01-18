@@ -10,6 +10,22 @@ public class AccessibilityOptions {
 
     private String wheelchairAccessibleSeating;
 
+    public String getWheelchairAccessibleRestroom() {
+        return wheelchairAccessibleRestroom;
+    }
+
+    public void setWheelchairAccessibleRestroom(String wheelchairAccessibleRestroom) {
+        this.wheelchairAccessibleRestroom = wheelchairAccessibleRestroom;
+    }
+
+    public String getWheelchairAccessibleSeating() {
+        return wheelchairAccessibleSeating;
+    }
+
+    public void setWheelchairAccessibleSeating(String wheelchairAccessibleSeating) {
+        this.wheelchairAccessibleSeating = wheelchairAccessibleSeating;
+    }
+
     public String getWheelchairAccessibleParking() {
         return wheelchairAccessibleParking;
     }

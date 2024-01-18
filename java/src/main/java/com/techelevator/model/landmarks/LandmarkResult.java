@@ -19,6 +19,15 @@ public class LandmarkResult {
     private Location location;
 
     private CurrentOpeningHours currentOpeningHours;
+    private String priceLevel;
+
+    public String getPriceLevel() {
+        return priceLevel;
+    }
+
+    public void setPriceLevel(String priceLevel) {
+        this.priceLevel = priceLevel;
+    }
 
     public String getId() {
         return id;

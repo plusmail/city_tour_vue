@@ -14,7 +14,7 @@ public class LandmarksAPI {
     }
 
     public static String searchForLandmarks(String city) {
-        String searchTerm = city + " empire state building";
+        String searchTerm = city + " Things to do";
         String apiKey = "AIzaSyB3DzEl4eOx63tJTTcmByC3PccyAthJRyA";
         String requestBody = "{\"textQuery\" : \"" + searchTerm + "\"}";
         HttpClient client = HttpClient.newHttpClient();

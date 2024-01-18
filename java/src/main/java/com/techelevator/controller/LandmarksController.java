@@ -20,9 +20,8 @@ public class LandmarksController {
         landmarksDao.createLandmark(placeId);
     }
 
-    @RequestMapping(path="", method = RequestMethod.GET)
-    public LandmarksResultList listLandmarks(){
-        String city = "new york";
+    @RequestMapping(path="{city}", method = RequestMethod.GET)
+    public LandmarksResultList listLandmarks(@PathVariable String city){
 
         return JSONProcessor.JSONParserMultiple(LandmarksAPI.searchForLandmarks(city));
 
