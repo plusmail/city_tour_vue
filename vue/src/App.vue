@@ -35,6 +35,13 @@ export default {
             this.$router.push({ name: 'login' });
           },
           visible: this.$store.state.token === ''
+        },
+        {
+          label: 'Test',
+          command: () => {
+            this.$router.push({ name: 'test' });
+          },
+          visible: this.$store.state.token === ''
         }
       ]
     };
