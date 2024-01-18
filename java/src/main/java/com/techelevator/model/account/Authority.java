@@ -1,4 +1,4 @@
-package com.techelevator.model;
+package com.techelevator.model.account;
 
 import java.util.Objects;
 

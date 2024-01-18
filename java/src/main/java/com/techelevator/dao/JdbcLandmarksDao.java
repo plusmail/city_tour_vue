@@ -1,9 +1,8 @@
 package com.techelevator.dao;
 
-import com.techelevator.model.Landmarks;
+import com.techelevator.model.landmarks.Landmarks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

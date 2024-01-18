@@ -1,7 +1,6 @@
 package com.techelevator.dao;
 
-import com.techelevator.model.Landmarks;
-import com.techelevator.model.User;
+import com.techelevator.model.landmarks.Landmarks;
 
 import java.util.List;
 
