@@ -3,6 +3,7 @@ package com.techelevator.model.itinerarylandmark;
 import com.techelevator.model.searchlandmark.AccessibilityOptions;
 import com.techelevator.model.searchlandmark.DisplayName;
 import com.techelevator.model.searchlandmark.Location;
+import com.techelevator.model.searchlandmark.openinghours.CurrentOpeningHours;
 
 import java.util.List;
 

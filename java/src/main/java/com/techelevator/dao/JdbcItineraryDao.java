@@ -26,7 +26,7 @@ public class JdbcItineraryDao implements ItineraryDao{
 
 
         } catch (Exception ex){
-            System.out.println("Something went wrong");
+            System.out.println("Something went wrong create itinerary ");
         }
         return newItinerary;
     }
@@ -55,7 +55,7 @@ public class JdbcItineraryDao implements ItineraryDao{
                 itinerary = mapRowToItinerary(results);
             }
         }catch (Exception ex){
-            System.out.println("Something went wrong");
+            System.out.println("Something went wrong: get itinerary");
         }
         return itinerary;
     };
@@ -79,7 +79,7 @@ public class JdbcItineraryDao implements ItineraryDao{
 
 
         } catch (Exception ex){
-            System.out.println("Something went wrong");
+            System.out.println("Something went wrong: add landmark to itinerary");
         }
     }
 

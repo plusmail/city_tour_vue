@@ -25,7 +25,7 @@ public class JdbcLandmarksDao implements LandmarksDao {
             //SqlRowSet results = jdbcTemplate.queryForRowSet(sql, )
 
         } catch (Exception ex){
-            System.out.println("Something went wrong");
+            System.out.println("Something went wrong: get landmark");
         }
 
         return landmarks;
@@ -48,7 +48,7 @@ public class JdbcLandmarksDao implements LandmarksDao {
 
 
         } catch (Exception ex){
-            System.out.println("Something went wrong");
+            System.out.println("Something went wrong: create landmark");
         }
         return newLandmark;
 

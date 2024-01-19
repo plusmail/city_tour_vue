@@ -1,11 +1,10 @@
 package com.techelevator.model.searchlandmark;
 
-import com.techelevator.model.searchlandmark.CurrentOpeningHours;
+import com.techelevator.model.searchlandmark.openinghours.CurrentOpeningHours;
 
 import java.util.List;
 
 public class LandmarkResult {
-    private String id;
     private DisplayName displayName;
 
     private List<String> types;
@@ -27,14 +26,6 @@ public class LandmarkResult {
 
     public void setPriceLevel(String priceLevel) {
         this.priceLevel = priceLevel;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public DisplayName getDisplayName() {

@@ -1,6 +1,7 @@
 package com.techelevator.controller;
 
 import com.techelevator.dao.LandmarksDao;
+import com.techelevator.model.searchlandmark.LandmarkResult;
 import com.techelevator.model.searchlandmark.SearchResultList;
 import com.techelevator.services.JSONProcessor;
 import com.techelevator.services.LandmarksAPI;
@@ -17,21 +18,21 @@ public class LandmarksController {
     @Autowired
     private LandmarksDao landmarksDao;
 
-    @RequestMapping(path="{placeId}", method = RequestMethod.POST)
+    @RequestMapping(path="create/{placeId}", method = RequestMethod.POST)
     public void createLandmark(@PathVariable String placeId){
         landmarksDao.createLandmark(placeId);
     }
 
-    @RequestMapping(path="{city}", method = RequestMethod.GET)
+    @RequestMapping(path="list/{city}", method = RequestMethod.GET)
     public SearchResultList listLandmarks(@PathVariable String city){
 
         return JSONProcessor.JSONParserMultiple(LandmarksAPI.searchForLandmarks(city));
 
     }
     @RequestMapping(path="place/{placeId}", method = RequestMethod.GET)
-    public SearchResultList getLandmark(@PathVariable String placeId){
+    public LandmarkResult getLandmark(@PathVariable String placeId){
 
-        return JSONProcessor.JSONParserMultiple(LandmarksAPI.getLandmark(placeId));
+        return JSONProcessor.JSONParserSingle(LandmarksAPI.getLandmark(placeId));
 
     }
 

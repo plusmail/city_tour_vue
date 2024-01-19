@@ -1,7 +1,11 @@
 package com.techelevator.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.techelevator.model.itinerarylandmark.PlaceResult;
+import com.techelevator.model.searchlandmark.LandmarkResult;
 import com.techelevator.model.searchlandmark.SearchResultList;
+
+import java.util.List;
 
 public class JSONProcessor {
     public static SearchResultList JSONParserMultiple(String input) {
@@ -14,10 +18,10 @@ public class JSONProcessor {
         }
         return null;
     }
-    public static PlaceResult JSONParserMultiple(String input) {
+    public static LandmarkResult JSONParserSingle(String input) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            PlaceResult landmarks = mapper.readValue(input, PlaceResult.class);
+            LandmarkResult landmarks = mapper.readValue(input, LandmarkResult.class);
             return landmarks;
         } catch (Exception ex) {
             System.out.println("Error parsing API request");
