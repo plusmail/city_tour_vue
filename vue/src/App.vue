@@ -37,9 +37,9 @@ export default {
           visible: this.$store.state.token === ''
         },
         {
-          label: 'Test',
+          label: 'Search',
           command: () => {
-            this.$router.push({ name: 'test' });
+            this.$router.push({ name: 'search' });
           },
           visible: this.$store.state.token === ''
         }

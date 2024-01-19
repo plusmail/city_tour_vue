@@ -50,8 +50,8 @@ const routes = [
     }
   },
   {
-    path: "/test",
-    name: "test",
+    path: "/search",
+    name: "search",
     component: LandmarksTestView,
     meta: {
       requiresAuth: false

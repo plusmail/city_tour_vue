@@ -17,20 +17,27 @@
   <script>
   export default {
     props: {
-      location: String
+      latitude: Number,
+      longitude: Number
     },
     computed: {
       mapUrl() {
-        if (!this.location) {
+        console.log(this.latitude, this.longitude, this.mapUrl);
+        if (this.latitude == null || this.longitude == null) {
           return null;
         }
-        const baseUrl = "https://www.google.com/maps/embed/v1/place";
+        const baseUrl = "https://www.google.com/maps/embed/v1/view";
         const apiKey = "AIzaSyB3DzEl4eOx63tJTTcmByC3PccyAthJRyA";
-        return `${baseUrl}?key=${apiKey}&q=${encodeURIComponent(this.location)}`;
+        const center = `${this.latitude},${this.longitude}`;
+        const zoom = "14";
+        return `${baseUrl}?key=${apiKey}&center=${center}&zoom=${zoom}`;
+        
       }
+
     }
   };
   </script>
+  
   
   <style>
   .google-map-container {
@@ -38,4 +45,3 @@
     height: 450px;
   }
   </style>
-  

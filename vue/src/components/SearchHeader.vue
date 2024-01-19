@@ -1,38 +1,84 @@
 <template>
-    <div class="search-header">
-      <AutoComplete 
-        placeholder="Search for a city..." 
-        v-model="selectedCity" 
-        :suggestions="citySuggestions"
-        @completeMethod="searchCities"
-        field="name"
-        @select="onCitySelect"/>
-  
-      <h2 v-if="selectedCity">{{ selectedCity.name }}</h2>
-    </div>
+    <Dropdown v-model="selectedCity" :options="groupedCities" optionLabel="label" optionGroupLabel="label" optionGroupChildren="items" placeholder="Select a City" class="w-full md:w-14rem">
+    <template #optiongroup="slotProps">
+        <div class="flex align-items-center">
+            <img :alt="slotProps.option.label" src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png" :class="`mr-2 flag flag-${slotProps.option.code.toLowerCase()}`" style="width: 18px" />
+            <div>{{ slotProps.option.label }}</div>
+        </div>
+    </template>
+</Dropdown>
   </template>
   
   <script>
-  import AutoComplete from 'primevue/autocomplete';
+  import { ref, watch } from 'vue';
+  import Dropdown from 'primevue/dropdown';
   
   export default {
     components: {
-      AutoComplete
+      Dropdown
     },
-    data() {
-      return {
-        selectedCity: null,
-        citySuggestions: []
-      };
-    },
-    methods: {
-      searchCities(event) {
-      },
-      onCitySelect(city) {
-        this.selectedCity = city;
-        this.$emit('citySelected', city);
+    props: {
+      modelValue: {
+        type: Object,
+        default: () => ({})
       }
-    }
-  };
-  </script>
+    },
+    setup(props, { emit }) {
+      // Local reactive state for the dropdown
+      const selectedCity = ref(props.modelValue);
+  
+      // Watch for changes in the local state and emit an update
+      watch(selectedCity, (newValue) => {
+        emit('update:modelValue', newValue);
+      });
+  
+      // Also watch for changes in props and update local state
+      watch(() => props.modelValue, (newValue) => {
+        if (newValue !== selectedCity.value) {
+          selectedCity.value = newValue;
+        }
+      });
+    const groupedCities = ref([
+    {
+        label: 'Germany',
+        code: 'DE',
+        items: [
+            { label: 'Berlin', value: 'Berlin' },
+            { label: 'Frankfurt', value: 'Frankfurt' },
+            { label: 'Hamburg', value: 'Hamburg' },
+            { label: 'Munich', value: 'Munich' }
+        ]
+    },
+    {
+        label: 'USA',
+        code: 'US',
+        items: [
+            { label: 'Chicago', value: 'Chicago' },
+            { label: 'Los Angeles', value: 'Los Angeles' },
+            { label: 'New York', value: 'New York' },
+            { label: 'San Francisco', value: 'San Francisco' }
+        ]
+    },
+    {
+        label: 'Japan',
+        code: 'JP',
+        items: [
+            { label: 'Kyoto', value: 'Kyoto' },
+            { label: 'Osaka', value: 'Osaka' },
+            { label: 'Tokyo', value: 'Tokyo' },
+            { label: 'Yokohama', value: 'Yokohama' }
+        ]
+  }]);
+
+watch(() => props.selectedCity, (newValue) => {
+  emit('update:selectedCity', newValue);
+});
+
+return {
+  selectedCity,
+  groupedCities
+};
+}
+};
+</script>
   
