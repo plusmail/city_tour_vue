@@ -1,13 +1,12 @@
 package com.techelevator.dao;
 
 import com.techelevator.model.itinerary.Itinerary;
-import com.techelevator.model.landmarks.Landmarks;
 
 import java.util.List;
 
 public interface ItineraryDao {
     //Create Itinerary
-    void createItinerary(int itineraryId);
+    Itinerary createItinerary(int itineraryId);
 
     //Get Itinerary
     Itinerary getItinerary(int itineraryId);
@@ -20,7 +19,7 @@ public interface ItineraryDao {
 
     //Delete Itinerary
     Itinerary deleteItinerary(int itineraryId);
-    void addLandmarkToItinerary(String placeId, int itineraryId);
+    void addLandmarkToItinerary(int itineraryId, String placeId);
 
 
 }

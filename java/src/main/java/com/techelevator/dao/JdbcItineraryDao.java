@@ -1,7 +1,6 @@
 package com.techelevator.dao;
 
 import com.techelevator.model.itinerary.Itinerary;
-import com.techelevator.model.landmarks.Landmarks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -16,7 +15,9 @@ public class JdbcItineraryDao implements ItineraryDao{
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public void createItinerary(int itineraryId){
+    public Itinerary createItinerary(int itineraryId){
+
+        Itinerary newItinerary = new Itinerary();
         String sql = "INSERT INTO itinerary (event_date, event_start_time, event_end_time)\n" +
                 "VALUES (?, ?, ?);";
         try{
@@ -27,6 +28,7 @@ public class JdbcItineraryDao implements ItineraryDao{
         } catch (Exception ex){
             System.out.println("Something went wrong");
         }
+        return newItinerary;
     }
     @Override
     public List<Itinerary> getItineraries(){
@@ -67,7 +69,7 @@ public class JdbcItineraryDao implements ItineraryDao{
     }
 
     @Override
-    public void addLandmarkToItinerary(String placeId, int itineraryId){
+    public void addLandmarkToItinerary(int itineraryId, String placeId){
         String sql = "INSERT INTO itinerary(place_id)\n" +
                 "WHERE itinerary_id equals ?\n" +
                 "VALUES (?);";

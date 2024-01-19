@@ -1,4 +1,4 @@
-package com.techelevator.model.landmarks.openinghours.periods;
+package com.techelevator.model.searchlandmark.openinghours.periods;
 
 public class Periods {
 

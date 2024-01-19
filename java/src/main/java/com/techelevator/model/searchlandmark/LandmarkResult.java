@@ -1,6 +1,6 @@
-package com.techelevator.model.landmarks;
+package com.techelevator.model.searchlandmark;
 
-import com.techelevator.model.landmarks.openinghours.CurrentOpeningHours;
+import com.techelevator.model.searchlandmark.CurrentOpeningHours;
 
 import java.util.List;
 

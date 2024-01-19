@@ -1,4 +1,4 @@
-package com.techelevator.model.landmarks;
+package com.techelevator.model.searchlandmark;
 
 import java.util.ArrayList;
 import java.util.List;

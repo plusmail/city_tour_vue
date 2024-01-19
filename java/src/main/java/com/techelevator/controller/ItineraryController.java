@@ -13,8 +13,14 @@ public class ItineraryController {
     @Autowired
     private ItineraryDao itineraryDao;
 
-    @RequestMapping(path="{itineraryId}", method = RequestMethod.POST)
-    public void addLandmark(@PathVariable int itineraryId){
-        itineraryDao.createItinerary(itineraryId);
+    @RequestMapping(path="{itineraryId}/{placeId}", method = RequestMethod.POST)
+    public void addLandmark(@PathVariable int itineraryId, String placeId){
+
+        if (itineraryDao.getItinerary(itineraryId) == null){
+            itineraryDao.createItinerary(itineraryId);
+        } else {
+            itineraryDao.addLandmarkToItinerary(itineraryId, placeId);
+        }
+
     }
 }

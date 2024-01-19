@@ -1,4 +1,4 @@
-package com.techelevator.model.landmarks;
+package com.techelevator.model.searchlandmark;
 
 public class DisplayName {
     private String text;

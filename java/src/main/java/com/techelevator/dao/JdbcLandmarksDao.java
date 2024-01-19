@@ -1,6 +1,6 @@
 package com.techelevator.dao;
 
-import com.techelevator.model.landmarks.Landmarks;
+import com.techelevator.model.searchlandmark.Landmarks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -37,8 +37,8 @@ public class JdbcLandmarksDao implements LandmarksDao {
     }
 
     @Override
-    public String createLandmark(String placeId) {
-
+    public Landmarks createLandmark(String placeId) {
+        Landmarks newLandmark = new Landmarks();
         String sql = "INSERT INTO landmarks\n" +
                 "(place_id)\n" +
                 "VALUES (?);";
@@ -50,6 +50,7 @@ public class JdbcLandmarksDao implements LandmarksDao {
         } catch (Exception ex){
             System.out.println("Something went wrong");
         }
+        return newLandmark;
 
 
 

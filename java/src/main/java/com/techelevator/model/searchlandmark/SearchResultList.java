@@ -1,8 +1,8 @@
-package com.techelevator.model.landmarks;
+package com.techelevator.model.searchlandmark;
 
 import java.util.List;
 
-public class LandmarksResultList {
+public class SearchResultList {
 private List<LandmarkResult> places;
 
     public List<LandmarkResult> getPlaces() {
