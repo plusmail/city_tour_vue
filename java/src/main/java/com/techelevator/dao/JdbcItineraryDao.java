@@ -64,8 +64,19 @@ public class JdbcItineraryDao implements ItineraryDao{
         return null;
     }
     @Override
-    public Itinerary deleteItinerary(int itineraryId){
-        return null;
+    public void deleteItinerary(int itineraryId){
+
+        String sql="  begin;delete FROM itinerary_landmarks WHERE itinerary_id=?;delete FROM itinerary WHERE itinerary_id=?;commit;";
+
+        try{
+
+            jdbcTemplate.update(sql,itineraryId);
+        }catch (Exception ex){
+            System.out.println("something went wrong: unable to delete");
+        }
+
+
+
     }
 
     @Override
