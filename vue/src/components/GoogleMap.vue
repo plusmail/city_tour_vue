@@ -34,7 +34,7 @@ export default {
       const baseUrl = "https://www.google.com/maps/embed/v1/place";
       const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
       const query = encodeURIComponent(`${this.displayName},${this.city}`);
-      return `${baseUrl}?key=${apiKey}&q=${query}`;
+      return `${baseUrl}?key=${apiKey}&q=${query}&zoom=18&maptype=satellite`;
     }
   }
 };
@@ -44,7 +44,7 @@ export default {
 <style>
 .google-map-container {
   width: 100%;
-  height: 450px;
+  height: 50rem;
 }
 iframe {
   width: 100%;

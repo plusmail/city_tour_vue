@@ -19,6 +19,7 @@
     "primeicons": "^6.0.1",
     "primevue": "^3.46.0",
     "vue": "^3.3.4",
+    "vue-deck.gl": "^2.0.0",
     "vue-router": "^4.2.5",
     "vuex": "^4.1.0"
   },

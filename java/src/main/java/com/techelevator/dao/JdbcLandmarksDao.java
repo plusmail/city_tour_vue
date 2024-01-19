@@ -37,7 +37,7 @@ public class JdbcLandmarksDao implements LandmarksDao {
     }
 
     @Override
-    public void createLandmark(String placeId) {
+    public String createLandmark(String placeId) {
 
         String sql = "INSERT INTO landmarks\n" +
                 "(place_id)\n" +

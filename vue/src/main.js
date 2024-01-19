@@ -11,6 +11,7 @@ import { DeepChat } from 'deep-chat';
 import InputText from "primevue/inputtext";
 import Button from 'primevue/button';
 import Password from 'primevue/password';
+import VueDeckgl from "vue-deck.gl";
 
 
 /* sets the base url for server API communication with axios */
@@ -41,4 +42,5 @@ app.component('DeepChat', DeepChat)
 app.use(PrimeVue);
 app.use(store);
 app.use(router);
+app.use(VueDeckgl);
 app.mount('#app');

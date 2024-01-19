@@ -4,8 +4,8 @@
   </template>
   
   <script>
-  // import Deck from '@deck.gl/core';
-  // import MapboxLayer from '@deck.gl/mapbox';
+  //import Deck from '@vue-deck.gl/core';
+  //import MapboxLayer from '@vue-deck.gl/mapbox';
   import mapboxgl from 'mapbox-gl';
   
   export default {
@@ -18,14 +18,14 @@
     mounted() {
       this.initializeMap();
     },
-    beforeDestroy() {
+    beforeUnmount() {
       if (this.deckInstance) {
         this.deckInstance.finalize();
       }
     },
     methods: {
       initializeMap() {
-        mapboxgl.accessToken = 'pk.eyJ1IjoiY2hhcmxlc3QxMTIxIiwiYSI6ImNscmlvZWludDBjY2wyb284Z21uMnNnM20ifQ.Weh2o60QiD3Cb-XsZYMseQ';
+        mapboxgl.accessToken = import.meta.env.VITE_DECKGL_API_KEY;
   
         const map = new mapboxgl.Map({
           container: this.$refs.mapContainer,
