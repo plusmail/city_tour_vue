@@ -2,8 +2,15 @@
   <div>
     <h1>Landmarks</h1>
     <SearchHeader v-model="selectedCity" />
+    <Button label="Add To Itinerary" @click="addToItinerary" />
     <Accordion>
-      <AccordionTab v-for="landmark in landmarks" :key="landmark.id" :header="landmark.displayName?.text">
+      <AccordionTab v-for="landmark in landmarks" :key="landmark.id">
+        <template #header>
+          <div class="accordion-header">
+          <span>{{ landmark.displayName?.text }}</span>
+          <Checkbox :value="landmark.id" v-model="selectedLandmarks" ></Checkbox>
+        </div>
+        </template>
         <h2>{{ landmark.displayName?.text }}</h2>
         <p v-if="landmark.formattedAddress"><strong>Address:</strong> {{ landmark.formattedAddress }}</p>
         <div v-if="typeof landmark.rating === 'number'">
@@ -30,7 +37,7 @@
         <p v-else>No opening hours information available</p>
 
         <p v-if="landmark.location && landmark.location.latitude && landmark.location.longitude">
-          <GoogleMap :latitude="landmark.location.latitude" :longitude="landmark.location.longitude" />
+          <GoogleMap :displayName="landmark.displayName?.text" :city="selectedCity.value" />
 
           <strong>Location:</strong> Latitude: {{ landmark.location.latitude }}, Longitude: {{ landmark.location.longitude }}
         </p>
@@ -47,54 +54,42 @@
   
   
 <script>
+import Checkbox from 'primevue/checkbox';
 import { ref, onMounted, watch } from 'vue';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import LandmarkService from '../services/LandmarkService';
 import Rating from 'primevue/rating';
 import SearchHeader from '../components/SearchHeader.vue';
+import GoogleMap from '../components/GoogleMap.vue';
 
 export default {
   components: {
     Accordion,
     AccordionTab,
     Rating,
-    SearchHeader
+    SearchHeader,
+    GoogleMap,
+    Checkbox,
   },
   setup() {
     const selectedCity = ref();
-    const groupedCities = ref([
-    {
-        label: 'Germany',
-        code: 'DE',
-        items: [
-            { label: 'Berlin', value: 'Berlin' },
-            { label: 'Frankfurt', value: 'Frankfurt' },
-            { label: 'Hamburg', value: 'Hamburg' },
-            { label: 'Munich', value: 'Munich' }
-        ]
-    },
-    {
-        label: 'USA',
-        code: 'US',
-        items: [
-            { label: 'Chicago', value: 'Chicago' },
-            { label: 'Los Angeles', value: 'Los Angeles' },
-            { label: 'New York', value: 'New York' },
-            { label: 'San Francisco', value: 'San Francisco' }
-        ]
-    },
-    {
-        label: 'Japan',
-        code: 'JP',
-        items: [
-            { label: 'Kyoto', value: 'Kyoto' },
-            { label: 'Osaka', value: 'Osaka' },
-            { label: 'Tokyo', value: 'Tokyo' },
-            { label: 'Yokohama', value: 'Yokohama' }
-        ]
-    }    ]);
+    const groupedCities = ref();
     const landmarks = ref([]);
+
+    const selectedLandmarks = ref([]);
+
+const addToItinerary = async () => {
+  try {
+    for (let id of selectedLandmarks.value) {
+      await fetch(`/itinerary/add/${id}`, {
+        method: 'POST',
+      });
+    }
+  } catch (error) {
+    console.error('Error adding to itinerary:', error);
+  }
+};
 
     const fetchLandmarks = async () => {
   try {
@@ -164,5 +159,11 @@ export default {
 SearchHeader{
   margin-bottom: 0.5rem;
   align-self: center;
+}
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 </style>

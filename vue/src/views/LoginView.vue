@@ -44,6 +44,18 @@ export default {
     };
   },
   methods: {
+    async addToItinerary(placeId) {
+      try {
+        const response = await fetch(`/itinerary/add/${placeId}`, {
+          method: 'POST',
+        });
+        if (!response.ok) {
+          throw new Error('Error adding to itinerary');
+        }
+      } catch (error) {
+        console.error('Error adding to itinerary:', error);
+      }
+    },
     login() {
       authService
         .login(this.user)
@@ -68,6 +80,20 @@ export default {
 
 
 <style scoped>
+.add-to-itinerary-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: gold; 
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+}
+
+.landmark-details {
+  padding-right: 2rem; 
+}
 .form-input-group {
   margin-bottom: 1rem;
 }

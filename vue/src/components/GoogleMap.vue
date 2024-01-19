@@ -1,47 +1,53 @@
 <template>
-    <div class="google-map-container">
-      <iframe
-        v-if="mapUrl"
-        :src="mapUrl"
-        width="600"
-        height="450"
-        frameborder="0"
-        style="border:0;"
-        allowfullscreen="true"
-        aria-hidden="false"
-        tabindex="0">
-      </iframe>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      latitude: Number,
-      longitude: Number
-    },
-    computed: {
-      mapUrl() {
-        console.log(this.latitude, this.longitude, this.mapUrl);
-        if (this.latitude == null || this.longitude == null) {
-          return null;
-        }
-        const baseUrl = "https://www.google.com/maps/embed/v1/view";
-        const apiKey = "AIzaSyB3DzEl4eOx63tJTTcmByC3PccyAthJRyA";
-        const center = `${this.latitude},${this.longitude}`;
-        const zoom = "14";
-        return `${baseUrl}?key=${apiKey}&center=${center}&zoom=${zoom}`;
-        
-      }
+  <div class="google-map-container">
+    <iframe
+      v-if="mapUrl"
+      :src="mapUrl"
+      width="100%"
+      height="450"
+      style="border:0;"
+      allowfullscreen
+      aria-hidden="false"
+      tabindex="0"
+      title="Google Map">
+    </iframe>
+  </div>
+</template>
 
+<script>
+export default {
+  props: {
+    displayName: {
+      type: String,
+      default: ''
+    },
+    city: {
+      type: String,
+      default: ''
     }
-  };
-  </script>
-  
-  
-  <style>
-  .google-map-container {
-    width: 100%;
-    height: 450px;
+  },
+  computed: {
+    mapUrl() {
+      if (!this.displayName || !this.city) {
+        return null;
+      }
+      const baseUrl = "https://www.google.com/maps/embed/v1/place";
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+      const query = encodeURIComponent(`${this.displayName},${this.city}`);
+      return `${baseUrl}?key=${apiKey}&q=${query}`;
+    }
   }
-  </style>
+};
+</script>
+
+
+<style>
+.google-map-container {
+  width: 100%;
+  height: 450px;
+}
+iframe {
+  width: 100%;
+  height: 100%;
+}
+</style>

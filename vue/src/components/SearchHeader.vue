@@ -1,84 +1,78 @@
 <template>
-    <Dropdown v-model="selectedCity" :options="groupedCities" optionLabel="label" optionGroupLabel="label" optionGroupChildren="items" placeholder="Select a City" class="w-full md:w-14rem">
-    <template #optiongroup="slotProps">
-        <div class="flex align-items-center">
-            <img :alt="slotProps.option.label" src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png" :class="`mr-2 flag flag-${slotProps.option.code.toLowerCase()}`" style="width: 18px" />
-            <div>{{ slotProps.option.label }}</div>
-        </div>
-    </template>
-</Dropdown>
-  </template>
+  <!-- Country Dropdown -->
+  <Dropdown filter v-model="selectedCountry" :options="countries" optionLabel="label" placeholder="Select a Country" class="w-full md:w-14rem" @change="loadStatesForCountry" />
+
+  <!-- State/Province Dropdown - Shown if states are available -->
+  <Dropdown filter v-model="selectedState" :options="states" optionLabel="label" placeholder="Select a State/Province" class="w-full md:w-14rem" v-if="states.length > 0" @change="loadCitiesForState" />
+
+  <!-- City Dropdown - Shown when cities are available -->
+  <Dropdown filter v-model="selectedCity" :options="cities" optionLabel="label" placeholder="Select a City" class="w-full md:w-14rem" v-if="cities.length > 0" />
+</template>
+
+
   
-  <script>
-  import { ref, watch } from 'vue';
-  import Dropdown from 'primevue/dropdown';
-  
-  export default {
-    components: {
-      Dropdown
-    },
-    props: {
-      modelValue: {
-        type: Object,
-        default: () => ({})
+<script>
+import { ref, watch } from 'vue';
+import Dropdown from 'primevue/dropdown';
+import { Country, State, City } from 'country-state-city';
+
+export default {
+  components: {
+    Dropdown
+  },
+  setup(props, { emit }) {
+    const selectedCountry = ref(null);
+    const selectedState = ref(null);
+    const selectedCity = ref(null);
+    const countries = ref([]);
+    const states = ref([]);
+    const cities = ref([]);
+
+    // Load countries
+    countries.value = Country.getAllCountries().map(country => ({
+      label: country.name,
+      code: country.isoCode
+    }));
+
+    // Load states for the selected country
+    function loadStatesForCountry() {
+      if (selectedCountry.value) {
+        states.value = State.getStatesOfCountry(selectedCountry.value.code).map(state => ({
+          label: state.name,
+          code: state.isoCode
+        }));
+        selectedState.value = null; // Reset selected state
+        cities.value = []; // Reset cities
       }
-    },
-    setup(props, { emit }) {
-      // Local reactive state for the dropdown
-      const selectedCity = ref(props.modelValue);
-  
-      // Watch for changes in the local state and emit an update
-      watch(selectedCity, (newValue) => {
-        emit('update:modelValue', newValue);
-      });
-  
-      // Also watch for changes in props and update local state
-      watch(() => props.modelValue, (newValue) => {
-        if (newValue !== selectedCity.value) {
-          selectedCity.value = newValue;
-        }
-      });
-    const groupedCities = ref([
-    {
-        label: 'Germany',
-        code: 'DE',
-        items: [
-            { label: 'Berlin', value: 'Berlin' },
-            { label: 'Frankfurt', value: 'Frankfurt' },
-            { label: 'Hamburg', value: 'Hamburg' },
-            { label: 'Munich', value: 'Munich' }
-        ]
-    },
-    {
-        label: 'USA',
-        code: 'US',
-        items: [
-            { label: 'Chicago', value: 'Chicago' },
-            { label: 'Los Angeles', value: 'Los Angeles' },
-            { label: 'New York', value: 'New York' },
-            { label: 'San Francisco', value: 'San Francisco' }
-        ]
-    },
-    {
-        label: 'Japan',
-        code: 'JP',
-        items: [
-            { label: 'Kyoto', value: 'Kyoto' },
-            { label: 'Osaka', value: 'Osaka' },
-            { label: 'Tokyo', value: 'Tokyo' },
-            { label: 'Yokohama', value: 'Yokohama' }
-        ]
-  }]);
+    }
 
-watch(() => props.selectedCity, (newValue) => {
-  emit('update:selectedCity', newValue);
-});
+    // Load cities for the selected state
+    function loadCitiesForState() {
+      if (selectedState.value) {
+        cities.value = City.getCitiesOfState(selectedCountry.value.code, selectedState.value.code).map(city => ({
+          label: city.name,
+          value: city.name
+        }));
+      }
+    }
 
-return {
-  selectedCity,
-  groupedCities
-};
-}
+    watch(selectedCity, (newValue) => {
+      emit('update:modelValue', newValue);
+    });
+
+    return {
+      selectedCountry,
+      selectedState,
+      selectedCity,
+      countries,
+      states,
+      cities,
+      loadStatesForCountry,
+      loadCitiesForState
+    };
+  }
 };
 </script>
+
+
   
