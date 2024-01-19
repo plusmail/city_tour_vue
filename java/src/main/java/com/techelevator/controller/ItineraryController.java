@@ -15,6 +15,6 @@ public class ItineraryController {
 
     @RequestMapping(path="{itineraryId}", method = RequestMethod.POST)
     public void addLandmark(@PathVariable int itineraryId){
-        itineraryDao.createItinerary(itineraryDao.getItinerary(itineraryId));
+        itineraryDao.createItinerary(itineraryId);
     }
 }
