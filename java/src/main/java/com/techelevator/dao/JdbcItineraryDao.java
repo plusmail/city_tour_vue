@@ -2,6 +2,7 @@ package com.techelevator.dao;
 
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.Itinerary;
+import com.techelevator.model.Landmark;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -124,8 +125,24 @@ public class JdbcItineraryDao implements ItineraryDao {
                 throw new DaoException("Itinerary not created");
             }
         } catch (Exception e) {
-            throw new DaoException("Itinerary not created");
+            throw new DaoException("Landmark not added to itinerary");
         }
+    }
+
+//    @Override
+    public List<Landmark> findAllLandmarks(int itineraryId) {
+        List<Landmark> landmarks = new ArrayList<>();
+//        String sql = "select * from itinerary_landmarks where itinerary_id = ?;"
+//
+//        try {
+//            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itineraryId);
+//            while (result.next()){
+//                landmarks.add(mapRowToItinerary(result));
+//            }
+//        } catch (Exception e) {
+//                        throw new DaoException("Landmark not found");
+//        }
+        return landmarks;
     }
 
     private Itinerary mapRowToItinerary(SqlRowSet result) {
