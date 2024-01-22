@@ -55,6 +55,13 @@ public class ItineraryController {
         itineraryDao.delete(itinerary);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
+    public void addLandmark(@RequestParam(value = "itinerary_id") int itineraryId,
+                            @RequestParam(value = "itinerary_id") String placeId) {
+        itineraryDao.addLandmark(itineraryId, placeId);
+    }
+
 
 
 //    public void addLandmark(@RequestParam(value = "itinerary_id") int itineraryId, @RequestParam(value = "place_id") String placeId) {

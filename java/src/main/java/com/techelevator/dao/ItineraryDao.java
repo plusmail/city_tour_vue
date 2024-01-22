@@ -15,5 +15,5 @@ public interface ItineraryDao {
 
     void delete(int itineraryId);
 
-//    void addLandmark(int itineraryId, String placeId);
+    int addLandmark(int itineraryId, String placeId);
 }

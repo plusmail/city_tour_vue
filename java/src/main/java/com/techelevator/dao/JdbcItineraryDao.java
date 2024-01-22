@@ -100,7 +100,9 @@ public class JdbcItineraryDao implements ItineraryDao {
 
     @Override
     public void delete(int itineraryId) {
-        String sql = "delete from itinerary where itinerary_id = ?";
+        String sql =
+//                "delete from itinerary_landmarks where itinerary_id = ?;\n" +
+                "delete from itinerary where itinerary_id = ?;";
 
         try {
             jdbcTemplate.update(sql, itineraryId);
@@ -110,18 +112,21 @@ public class JdbcItineraryDao implements ItineraryDao {
         }
     }
 
-//    @Override
-//    public void addLandmark(int itineraryId, String placeId) {
-//        String sql = "INSERT INTO itinerary(place_id)\n" +
-//                "WHERE itinerary_id equals ?\n" +
-//                "VALUES (?);";
-//
-//        try {
-//            jdbcTemplate.update(sql, itineraryId, placeId);
-//        } catch (Exception ex) {
-//            System.out.println("Something went wrong: add landmark to itinerary");
-//        }
-//    }
+    @Override
+    public int addLandmark(int itineraryId, String placeId) {
+        String sql = "INSERT INTO itinerary_landmark(itinerary_id, place_id)\n" +
+                "VALUES (?, ?);";
+        try {
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itineraryId, placeId);
+            if (result.next()) {
+                return result.getInt("itinerary_id");
+            } else {
+                throw new DaoException("Itinerary not created");
+            }
+        } catch (Exception e) {
+            throw new DaoException("Itinerary not created");
+        }
+    }
 
     private Itinerary mapRowToItinerary(SqlRowSet result) {
         Itinerary itinerary = new Itinerary();
