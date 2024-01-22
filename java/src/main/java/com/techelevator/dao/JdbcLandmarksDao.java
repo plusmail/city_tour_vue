@@ -29,6 +29,11 @@ public class JdbcLandmarksDao implements LandmarksDao {
     }
 
 //    @Override
+//    public Landmarks findByPlaceId(String placeId) {
+//        return null;
+//    }
+
+//    @Override
 //    public List<Landmarks> list() {
 //        List<Landmarks> landmarks = new ArrayList<>();
 //        String sql = "SELECT * FROM landmarks;";
@@ -43,11 +48,6 @@ public class JdbcLandmarksDao implements LandmarksDao {
 //    }
 
 
-//    @Override
-//    public Landmarks findByPlaceId(String placeId) {
-//        return null;
-//    }
-//
 //    @Override
 //    public Landmarks update(Landmarks landmark, String placeId) {
 //        return null;

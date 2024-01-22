@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface LandmarksDao {
     Landmarks create(String placeId);
-//    List<Landmarks> list();
 //    Landmarks findByPlaceId(String placeId);
+//    List<Landmarks> list();
 //    Landmarks update(Landmarks landmark, String placeId);
 //    Landmarks delete(String placeId);
 }
