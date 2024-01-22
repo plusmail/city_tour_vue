@@ -1,25 +1,19 @@
 package com.techelevator.dao;
 
-import com.techelevator.model.itinerary.Itinerary;
+import com.techelevator.model.Itinerary;
 
 import java.util.List;
 
 public interface ItineraryDao {
-    //Create Itinerary
-    Itinerary createItinerary(int itineraryId);
+    int create(Itinerary itinerary);
 
-    //Get Itinerary
-    Itinerary getItinerary(int itineraryId);
+    Itinerary findById(int itineraryId);
 
-    //Get List of Itineraries
-    List<Itinerary> getItineraries();
+    List<Itinerary> findAll();
 
-    //Edit Itinerary
-    Itinerary editItinerary(Itinerary itinerary, int itineraryId);
+    Itinerary update(Itinerary itinerary);
 
-    //Delete Itinerary
-    void deleteItinerary(int itineraryId);
-    void addLandmarkToItinerary(int itineraryId, String placeId);
+//    void delete(int itineraryId);
 
-
+//    void addLandmark(int itineraryId, String placeId);
 }

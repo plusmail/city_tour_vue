@@ -1,6 +1,7 @@
 package com.techelevator.dao;
 
-import com.techelevator.model.itinerary.Itinerary;
+import com.techelevator.exception.DaoException;
+import com.techelevator.model.Itinerary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -10,110 +11,132 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class JdbcItineraryDao implements ItineraryDao{
+public class JdbcItineraryDao implements ItineraryDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public Itinerary createItinerary(int itineraryId){
+    public int create(Itinerary itinerary) {
+        String sql = "insert into itinerary (event_date, start_time, end_time)\n" +
+                "values (?, ?, ?) returning itinerary_id";
 
-        Itinerary newItinerary = new Itinerary();
-        String sql = "INSERT INTO itinerary (event_date, event_start_time, event_end_time)\n" +
-                "VALUES (?, ?, ?);";
-        try{
-
-            jdbcTemplate.update(sql, itineraryId);
-
-
-        } catch (Exception ex){
-            System.out.println("Something went wrong create itinerary ");
-        }
-        return newItinerary;
-    }
-    @Override
-    public List<Itinerary> getItineraries(){
-        List<Itinerary> itineraries = new ArrayList<>();
-        String sql = "SELECT * FROM itinerary;";
-
-        try{
-
-            //SqlRowSet results = jdbcTemplate.queryForRowSet(sql, )
-
-        } catch (Exception ex){
-            System.out.println("Something went wrong");
-        }
-
-        return itineraries;
-    }
-    @Override
-    public Itinerary getItinerary(int itineraryId){
-        Itinerary itinerary = null;
-        String sql="SELECT * FROM itinerary WHERE itinerary_id=?;";
-        try{
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, itineraryId);
-            while(results.next()){
-                itinerary = mapRowToItinerary(results);
+        try {
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itinerary.getEventDate(), itinerary.getStartTime(), itinerary.getEndTime());
+            if (result.next()) {
+                return result.getInt("itinerary_id");
+            } else {
+                throw new DaoException("Itinerary not created");
             }
-        }catch (Exception ex){
-            System.out.println("Something went wrong: get itinerary");
+        } catch (Exception e) {
+            throw new DaoException("Itinerary not created");
         }
-        return itinerary;
-    };
+    }
+
     @Override
-    public Itinerary editItinerary(Itinerary itinerary, int itineraryId){
+    public Itinerary findById(int itineraryId) {
+        String sql = "select * from itinerary where itinerary_id = ?;";
+
+        try {
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itineraryId);
+            if (result.next()) {
+                return mapRowToItinerary(result);
+            }
+        } catch (Exception e) {
+            String message = String.format("Itinerary not found: itinerary_id(%s)", itineraryId);
+            throw new DaoException(message);
+        }
         return null;
     }
+
     @Override
-    public void deleteItinerary(int itineraryId){
+    public List<Itinerary> findAll() {
+        List<Itinerary> itineraries = new ArrayList<>();
+        String sql = "select * from itinerary;";
 
-        String sql="  begin;delete FROM itinerary_landmarks WHERE itinerary_id=?;delete FROM itinerary WHERE itinerary_id=?;commit;";
-
-        try{
-
-            jdbcTemplate.update(sql,itineraryId);
-        }catch (Exception ex){
-            System.out.println("something went wrong: unable to delete");
+        try {
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql);
+            while (result.next()) {
+                itineraries.add(mapRowToItinerary(result));
+            }
+        } catch (Exception e) {
+            throw new DaoException("Itinerary not found");
         }
-
-
-
+        return itineraries;
     }
 
     @Override
-    public void addLandmarkToItinerary(int itineraryId, String placeId){
-        String sql = "INSERT INTO itinerary(place_id)\n" +
-                "WHERE itinerary_id equals ?\n" +
-                "VALUES (?);";
-        try{
+    public Itinerary update(Itinerary itinerary) {
+        Itinerary updatedItinerary = null;
+        String sql = "update itinerary set event_date = ?, start_time = ?, end_time = ? where itinerary_id = ?";
 
-            jdbcTemplate.update(sql, itineraryId, placeId);
+        try {
+            int itineraryId = itinerary.getItineraryId();
 
+            if (itinerary.getItineraryId() == 0)
+                throw new DaoException("Missing required value: itineraryId");
 
-        } catch (Exception ex){
-            System.out.println("Something went wrong: add landmark to itinerary");
+//            if (itinerary.getEventDate() != null)
+//                itinerary.setEventDate(findById(itineraryId).getEventDate());
+//
+//            if (itinerary.getEventDate() != null)
+//                itinerary.setStartTime(findById(itineraryId).getStartTime());
+//
+//            if (itinerary.getEventDate() != null)
+//                itinerary.setEndTime(findById(itineraryId).getEndTime());
+
+//            jdbcTemplate.update(sql,
+//                    itinerary.getEventDate(),
+//                    itinerary.getStartTime(),
+//                    itinerary.getEndTime(),
+//                    itinerary.getItineraryId());
+
+//            updatedItinerary = findById(itineraryId);
+        } catch (Exception e) {
+            String message = String.format("Itinerary not found: itinerary_id(%s)", itinerary.getItineraryId());
+            throw new DaoException(message);
         }
+        updatedItinerary = itinerary;
+        return updatedItinerary;
     }
 
-    private Itinerary mapRowToItinerary(SqlRowSet results){
+//    @Override
+//    public void delete(int itineraryId) {
+//        String sql = "  begin;delete FROM itinerary_landmarks WHERE itinerary_id=?;delete FROM itinerary WHERE itinerary_id=?;commit;";
+//
+//        try {
+//            jdbcTemplate.update(sql, itineraryId);
+//        } catch (Exception ex) {
+//            System.out.println("something went wrong: unable to delete");
+//        }
+//    }
+
+//    @Override
+//    public void addLandmark(int itineraryId, String placeId) {
+//        String sql = "INSERT INTO itinerary(place_id)\n" +
+//                "WHERE itinerary_id equals ?\n" +
+//                "VALUES (?);";
+//
+//        try {
+//            jdbcTemplate.update(sql, itineraryId, placeId);
+//        } catch (Exception ex) {
+//            System.out.println("Something went wrong: add landmark to itinerary");
+//        }
+//    }
+
+    private Itinerary mapRowToItinerary(SqlRowSet result) {
         Itinerary itinerary = new Itinerary();
 
-        itinerary.setItineraryId(results.getInt("itinerary_id"));
-        itinerary.setPlaceId(results.getString("place_id"));
-        if (results.getTime("event_start_time") != null){
-            itinerary.setStartTime(results.getTime("event_start_time").toLocalTime());
-        }
-        if (results.getTime("event_end_time") != null){
-            itinerary.setStartTime(results.getTime("event_end_time").toLocalTime());
-        }
-        if (results.getDate("event_date") != null){
-            itinerary.setEventDate(results.getDate("event_date").toLocalDate());
-        }
+        itinerary.setItineraryId(result.getInt("itinerary_id"));
+
+        if (result.getDate("event_date") != null)
+            itinerary.setEventDate(result.getDate("event_date").toLocalDate());
+
+        if (result.getTime("start_time") != null)
+            itinerary.setStartTime(result.getTime("start_time").toLocalTime());
+
+        if (result.getTime("end_time") != null)
+            itinerary.setEndTime(result.getTime("end_time").toLocalTime());
+
         return itinerary;
-
-
     }
-
-
-
-
 }

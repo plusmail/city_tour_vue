@@ -1,22 +1,13 @@
-package com.techelevator.model.itinerary;
+package com.techelevator.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Itinerary {
     private int itineraryId;
-    private String placeId;
     private LocalDate eventDate;
     private LocalTime startTime;
     private LocalTime endTime;
-
-    public String getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
 
     public int getItineraryId() {
         return itineraryId;
@@ -49,6 +40,4 @@ public class Itinerary {
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
-
-
 }

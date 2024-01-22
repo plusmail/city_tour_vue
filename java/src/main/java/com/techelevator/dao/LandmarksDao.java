@@ -5,12 +5,9 @@ import com.techelevator.model.searchlandmark.Landmarks;
 import java.util.List;
 
 public interface LandmarksDao {
-    List<Landmarks> getLandmarks();
-    Landmarks getLandmark(String placeId);
-    Landmarks createLandmark(String placeId);
-    Landmarks updateLandmark(Landmarks landmark, String placeId);
-    Landmarks deleteLandmark(String placeId);
-
-
-
+//    List<Landmarks> list();
+//    Landmarks create(String placeId);
+//    Landmarks findByPlaceId(String placeId);
+//    Landmarks update(Landmarks landmark, String placeId);
+//    Landmarks delete(String placeId);
 }
