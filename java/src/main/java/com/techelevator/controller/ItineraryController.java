@@ -44,24 +44,33 @@ public class ItineraryController {
         return itineraryDao.findAll();
     }
 
+    /*
+     * localhost:9000/itinerary/update
+     * */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/update", method = RequestMethod.POST)
     public Itinerary update(@RequestBody Itinerary itinerary) {
         return itineraryDao.update(itinerary);
     }
+
+    /*
+     * localhost:9000/itinerary/delete?itinerary_id=2003
+     * */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/delete", method = RequestMethod.POST)
     public void delete(@RequestParam(value = "itinerary_id") int itinerary) {
         itineraryDao.delete(itinerary);
     }
 
+    /*
+     * localhost:9000/itinerary/add_landmark?itinerary_id=2003
+     * */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
     public void addLandmark(@RequestParam(value = "itinerary_id") int itineraryId,
-                            @RequestParam(value = "itinerary_id") String placeId) {
+                            @RequestParam(value = "place_id") String placeId) {
         itineraryDao.addLandmark(itineraryId, placeId);
     }
-
 
 
 //    public void addLandmark(@RequestParam(value = "itinerary_id") int itineraryId, @RequestParam(value = "place_id") String placeId) {
