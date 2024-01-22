@@ -1,6 +1,7 @@
 package com.techelevator.controller;
 
 import com.techelevator.dao.ItineraryDao;
+import com.techelevator.dao.UserDao;
 import com.techelevator.model.Itinerary;
 import com.techelevator.model.Landmark;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,18 @@ import java.util.List;
 public class ItineraryController {
     @Autowired
     private ItineraryDao itineraryDao;
+    @Autowired
+    private UserDao userDao;
 
     /*
-     * localhost:9000/itinerary/create
+     * localhost:9000/itinerary/create?user_id=1001
      * */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public int create(@RequestBody Itinerary itinerary) {
-        return itineraryDao.create(itinerary);
+    public int create(@RequestBody Itinerary itinerary, @RequestParam(value = "user_id" int user_id)) {
+//    public int create(@RequestBody Itinerary itinerary) {
+        int itineraryId = itineraryDao.create(itinerary);
+        userDao.
     }
 
     /*
@@ -69,6 +74,16 @@ public class ItineraryController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
     public int addLandmark(@RequestParam(value = "itinerary_id") int itineraryId,
+                            @RequestParam(value = "place_id") String placeId) {
+        return itineraryDao.addLandmark(itineraryId, placeId);
+    }
+
+    /*
+     * localhost:9000/itinerary/add_landmark?itinerary_id=2003
+     * */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "/add_la", method = RequestMethod.POST)
+    public int addItineraryToUser(@RequestParam(value = "itinerary_id") int itineraryId,
                             @RequestParam(value = "place_id") String placeId) {
         return itineraryDao.addLandmark(itineraryId, placeId);
     }

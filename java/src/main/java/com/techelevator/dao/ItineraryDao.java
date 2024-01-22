@@ -18,5 +18,5 @@ public interface ItineraryDao {
 
     int addLandmark(int itineraryId, String placeId);
 
-    List<Landmark> findAllLandmarks(int itineraryId);
+//    List<Landmark> findAllLandmarks(int itineraryId);
 }

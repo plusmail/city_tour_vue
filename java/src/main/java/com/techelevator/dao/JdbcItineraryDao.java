@@ -23,6 +23,7 @@ public class JdbcItineraryDao implements ItineraryDao {
 
         try {
             SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itinerary.getEventDate(), itinerary.getStartTime(), itinerary.getEndTime());
+
             if (result.next()) {
                 return result.getInt("itinerary_id");
             } else {
@@ -32,6 +33,9 @@ public class JdbcItineraryDao implements ItineraryDao {
             throw new DaoException("Itinerary not created");
         }
     }
+
+//    @Override
+//    public int add(Itinerary itinerary, int userId) {
 
     @Override
     public Itinerary findById(int itineraryId) {
@@ -102,7 +106,7 @@ public class JdbcItineraryDao implements ItineraryDao {
     @Override
     public void delete(int itineraryId) {
         String sql =
-//                "delete from itinerary_landmarks where itinerary_id = ?;\n" +
+                "delete from itinerary_landmarks where itinerary_id = ?;\n" +
                 "delete from itinerary where itinerary_id = ?;";
 
         try {
@@ -130,8 +134,8 @@ public class JdbcItineraryDao implements ItineraryDao {
     }
 
 //    @Override
-    public List<Landmark> findAllLandmarks(int itineraryId) {
-        List<Landmark> landmarks = new ArrayList<>();
+//    public List<Landmark> findAllLandmarks(int itineraryId) {
+//        List<Landmark> landmarks = new ArrayList<>();
 //        String sql = "select * from itinerary_landmarks where itinerary_id = ?;"
 //
 //        try {
@@ -142,8 +146,8 @@ public class JdbcItineraryDao implements ItineraryDao {
 //        } catch (Exception e) {
 //                        throw new DaoException("Landmark not found");
 //        }
-        return landmarks;
-    }
+//        return landmarks;
+//    }
 
     private Itinerary mapRowToItinerary(SqlRowSet result) {
         Itinerary itinerary = new Itinerary();

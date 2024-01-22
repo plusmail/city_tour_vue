@@ -49,7 +49,7 @@ public class LandmarksController {
     }
 
     /*
-     * localhost:9000/landmarks/search_photos?query=something
+     * localhost:9000/landmarks/search_photos?query=new york
      * */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/search_photos", method = RequestMethod.GET)

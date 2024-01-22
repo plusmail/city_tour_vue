@@ -33,6 +33,7 @@ public class GoogleMaps {
             return response.body();
         } catch (Exception var7) {
             System.out.println("Error Getting Response");
+            return null;
         }
     }
 
@@ -54,10 +55,12 @@ public class GoogleMaps {
             return response.body();
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
+
     public String searchPhotos(String query){
-        "ChIJ2fzCmcW7j4AR2JzfXBBoh6E/photos/AUacShh3_Dd8yvV2JZMtNjjbbSbFhSv-0VmUN-uasQ2Oj00XB63irPTks0-A_1rMNfdTunoOVZfVOExRRBNrupUf8TY4Kw5iQNQgf2rwcaM8hXNQg7KDyvMR5B-HzoCE1mwy2ba9yxvmtiJrdV-xBgO8c5iJL65BCd0slyI1/media?maxHeightPx=400&maxWidthPx=400&key=API_KEY"
+//        "ChIJ2fzCmcW7j4AR2JzfXBBoh6E/photos/AUacShh3_Dd8yvV2JZMtNjjbbSbFhSv-0VmUN-uasQ2Oj00XB63irPTks0-A_1rMNfdTunoOVZfVOExRRBNrupUf8TY4Kw5iQNQgf2rwcaM8hXNQg7KDyvMR5B-HzoCE1mwy2ba9yxvmtiJrdV-xBgO8c5iJL65BCd0slyI1/media?maxHeightPx=400&maxWidthPx=400&key=API_KEY"
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -76,6 +79,7 @@ public class GoogleMaps {
             return response.body();
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 }

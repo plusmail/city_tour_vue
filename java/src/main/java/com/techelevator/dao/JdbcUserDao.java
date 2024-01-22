@@ -88,6 +88,22 @@ public class JdbcUserDao implements UserDao {
         return newUser;
     }
 
+    public int addItinerary(int userId, int itineraryId) {
+        String sql = "insert into users_itinerary (user_id, itinerary_id)\n" +
+                "values (?, ?) returning user_id;";
+
+        try {
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userId, itineraryId);
+            if (result.next()) {
+                return result.getInt("user_id");
+            } else {
+                throw new DaoException("Itinerary not added to user");
+            }
+        } catch (Exception e) {
+            throw new DaoException("Itinerary not added to user");
+        }
+    }
+
     private User mapRowToUser(SqlRowSet rs) {
         User user = new User();
         user.setId(rs.getInt("user_id"));
