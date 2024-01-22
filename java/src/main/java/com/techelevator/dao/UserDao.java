@@ -16,4 +16,5 @@ public interface UserDao {
     User createUser(RegisterUserDto user);
 
     int addItinerary(int userId, int itineraryId);
+    void deleteItinerary(int itineraryId);
 }

@@ -104,6 +104,17 @@ public class JdbcUserDao implements UserDao {
         }
     }
 
+    public void deleteItinerary(int itineraryId) {
+        String sql = "delete from users_itinerary where itinerary_id = ?;";
+
+        try {
+            jdbcTemplate.update(sql, itineraryId);
+        } catch (Exception e) {
+            String message = String.format("Itinerary not deleted: itinerary_id(%s)", itineraryId);
+            throw new DaoException(message);
+        }
+    }
+
     private User mapRowToUser(SqlRowSet rs) {
         User user = new User();
         user.setId(rs.getInt("user_id"));

@@ -3,33 +3,41 @@ package com.techelevator.controller;
 import com.techelevator.dao.ItineraryDao;
 import com.techelevator.dao.UserDao;
 import com.techelevator.model.Itinerary;
-import com.techelevator.model.Landmark;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
-
 import java.util.List;
 
 
 @RestController
 @CrossOrigin
 @RequestMapping(path = "/itinerary")
-public class ItineraryController {
+public class ItineraryController implements BaseController {
     @Autowired
     private ItineraryDao itineraryDao;
     @Autowired
     private UserDao userDao;
 
+    @Override
+    public String whoami() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    @Override
+    public int currentUserId() {
+        String username = whoami();
+        return userDao.getUserByUsername(username).getId();
+    }
+
     /*
-     * localhost:9000/itinerary/create?user_id=1001
+     * localhost:9000/itinerary/create
      * */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public int create(@RequestBody Itinerary itinerary, @RequestParam(value = "user_id") int user_id) {
-//    public int create(@RequestBody Itinerary itinerary) {
+    public int create(@RequestBody Itinerary itinerary) {
         itineraryDao.create(itinerary);
-//        userDao.
+        userDao.addItinerary(currentUserId(), itinerary.getItineraryId());
         return itinerary.getItineraryId();
     }
 
@@ -65,8 +73,9 @@ public class ItineraryController {
      * */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/delete", method = RequestMethod.POST)
-    public void delete(@RequestParam(value = "itinerary_id") int itinerary) {
-        itineraryDao.delete(itinerary);
+    public void delete(@RequestParam(value = "itinerary_id") int itineraryId) {
+        userDao.deleteItinerary(itineraryId);
+        itineraryDao.delete(itineraryId);
     }
 
     /*
@@ -75,7 +84,7 @@ public class ItineraryController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
     public int addLandmark(@RequestParam(value = "itinerary_id") int itineraryId,
-                            @RequestParam(value = "place_id") String placeId) {
+                           @RequestParam(value = "place_id") String placeId) {
         return itineraryDao.addLandmark(itineraryId, placeId);
     }
 
@@ -85,7 +94,7 @@ public class ItineraryController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/add_la", method = RequestMethod.POST)
     public int addItineraryToUser(@RequestParam(value = "itinerary_id") int itineraryId,
-                            @RequestParam(value = "place_id") String placeId) {
+                                  @RequestParam(value = "place_id") String placeId) {
         return itineraryDao.addLandmark(itineraryId, placeId);
     }
 

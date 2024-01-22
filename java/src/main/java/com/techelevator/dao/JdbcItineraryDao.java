@@ -105,9 +105,8 @@ public class JdbcItineraryDao implements ItineraryDao {
 
     @Override
     public void delete(int itineraryId) {
-        String sql =
-                "delete from itinerary_landmarks where itinerary_id = ?;\n" +
-                "delete from itinerary where itinerary_id = ?;";
+        String sql = "delete from users_itinerary where itinerary_id = ?;\n" +
+                     "delete from itinerary where itinerary_id = ?;";
 
         try {
             jdbcTemplate.update(sql, itineraryId);
@@ -119,7 +118,7 @@ public class JdbcItineraryDao implements ItineraryDao {
 
     @Override
     public int addLandmark(int itineraryId, String placeId) {
-        String sql = "INSERT INTO itinerary_landmark(itinerary_id, place_id)\n" +
+        String sql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id)\n" +
                 "VALUES (?, ?);";
         try {
             SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itineraryId, placeId);
@@ -133,21 +132,19 @@ public class JdbcItineraryDao implements ItineraryDao {
         }
     }
 
-//    @Override
-//    public List<Landmark> findAllLandmarks(int itineraryId) {
-//        List<Landmark> landmarks = new ArrayList<>();
-//        String sql = "select * from itinerary_landmarks where itinerary_id = ?;"
-//
-//        try {
-//            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itineraryId);
-//            while (result.next()){
-//                landmarks.add(mapRowToItinerary(result));
-//            }
-//        } catch (Exception e) {
-//                        throw new DaoException("Landmark not found");
-//        }
-//        return landmarks;
-//    }
+    @Override
+    public void removeLandmark(String placeId) {
+        String sql = "delete from itinerary_landmarks where place_id = ?;";
+
+        try {
+            jdbcTemplate.update(sql, placeId);
+        } catch (Exception e) {
+            String message = String.format("Landmark not removed from itinerary: place_id(%s)", placeId);
+            throw new DaoException(message);
+        }
+    }
+
+
 
     private Itinerary mapRowToItinerary(SqlRowSet result) {
         Itinerary itinerary = new Itinerary();
