@@ -14,6 +14,20 @@ public class JdbcLandmarksDao implements LandmarksDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Override
+    public Landmarks create(String placeId) {
+        Landmarks newLandmark = new Landmarks();
+        String sql = "insert into landmarks (place_id)\n" +
+                "VALUES (?);";
+        try {
+            jdbcTemplate.update(sql, placeId);
+        } catch (Exception e) {
+            System.out.println("Something went wrong: create landmark");
+        }
+
+        return newLandmark;
+    }
+
 //    @Override
 //    public List<Landmarks> list() {
 //        List<Landmarks> landmarks = new ArrayList<>();
@@ -28,21 +42,7 @@ public class JdbcLandmarksDao implements LandmarksDao {
 //        return landmarks;
 //    }
 
-//    @Override
-//    public Landmarks create(String placeId) {
-//        Landmarks newLandmark = new Landmarks();
-//        String sql = "INSERT INTO landmarks\n" +
-//                "(place_id)\n" +
-//                "VALUES (?);";
-//        try {
-//            jdbcTemplate.update(sql, placeId);
-//        } catch (Exception e) {
-//            System.out.println("Something went wrong: create landmark");
-//        }
-//
-//        return newLandmark;
-//    }
-//
+
 //    @Override
 //    public Landmarks findByPlaceId(String placeId) {
 //        return null;

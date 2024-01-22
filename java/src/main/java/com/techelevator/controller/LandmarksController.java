@@ -22,11 +22,11 @@ public class LandmarksController {
      * example query
      * localhost:9000/landmarks/create?place_id=1234567890
      * */
-//    @ResponseStatus(HttpStatus.CREATED)
-//    @RequestMapping(path = "/create", method = RequestMethod.POST)
-//    public void create(@RequestParam(value = "place_id") String placeId) {
-//        landmarksDao.create(placeId);
-//    }
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(path = "/create", method = RequestMethod.POST)
+    public void create(@RequestParam(value = "place_id") String placeId) {
+        landmarksDao.create(placeId);
+    }
 
     /*
      * localhost:9000/landmarks/search?city=dubai
@@ -45,5 +45,11 @@ public class LandmarksController {
     @RequestMapping(path = "/find", method = RequestMethod.GET)
     public String findByPlaceId(@RequestParam(value = "place_id") String placeId) {
         return googleMaps.findByPlaceId(placeId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "/API_KEY", method = RequestMethod.POST)
+    public String getAPIKey(){
+        return googleMaps.getAPIKey();
     }
 }

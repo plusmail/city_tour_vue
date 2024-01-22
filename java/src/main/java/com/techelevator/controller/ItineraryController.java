@@ -84,10 +84,7 @@ public class ItineraryController {
 //    }
 
 
-
-
 //    public void addLandmark(@RequestParam(value = "itinerary_id") int itineraryId, @RequestParam(value = "place_id") String placeId) {
-
 //        if (itineraryDao.findById(itineraryId) == null) {
 //            itineraryDao.create(itineraryId);
 //        } else {

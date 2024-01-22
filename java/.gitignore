@@ -4,6 +4,9 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+### System ###
+.env
+
 ### STS ###
 .apt_generated
 .classpath

@@ -58,4 +58,8 @@ public class GoogleMaps {
             return null;
         }
     }
+
+    public String getAPIKey(){
+        return API_KEY;
+    }
 }
