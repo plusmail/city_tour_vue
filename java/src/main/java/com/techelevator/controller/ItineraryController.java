@@ -26,10 +26,11 @@ public class ItineraryController {
      * */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public int create(@RequestBody Itinerary itinerary, @RequestParam(value = "user_id" int user_id)) {
+    public int create(@RequestBody Itinerary itinerary, @RequestParam(value = "user_id") int user_id) {
 //    public int create(@RequestBody Itinerary itinerary) {
-        int itineraryId = itineraryDao.create(itinerary);
-        userDao.
+        itineraryDao.create(itinerary);
+//        userDao.
+        return itinerary.getItineraryId();
     }
 
     /*
