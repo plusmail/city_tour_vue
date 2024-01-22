@@ -6,7 +6,7 @@ import com.techelevator.model.Landmark;
 import java.util.List;
 
 public interface ItineraryDao {
-    int create(Itinerary itinerary, int userId);
+    int create(Itinerary itinerary);
 
     Itinerary findById(int itineraryId);
 

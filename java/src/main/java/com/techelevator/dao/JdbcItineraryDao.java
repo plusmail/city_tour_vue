@@ -17,26 +17,18 @@ public class JdbcItineraryDao implements ItineraryDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public int create(Itinerary itinerary, int userId) {
+    public int create(Itinerary itinerary) {
         String sql = "insert into itinerary (event_date, start_time, end_time)\n" +
                 "values (?, ?, ?) returning itinerary_id";
-//        String sql2 = "insert into users_itinerary (user_id, itinerary_id)\n" +
-//                "values (?, ?) returning user_id";
 
         try {
             SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itinerary.getEventDate(), itinerary.getStartTime(), itinerary.getEndTime());
-//            SqlRowSet result2 = jdbcTemplate.queryForRowSet(sql, userId, itinerary.getItineraryId());
 
             if (result.next()) {
                 return result.getInt("itinerary_id");
             } else {
                 throw new DaoException("Itinerary not created");
             }
-
-//            if (result2.next()){
-//                return result2.
-//            }
-
         } catch (Exception e) {
             throw new DaoException("Itinerary not created");
         }

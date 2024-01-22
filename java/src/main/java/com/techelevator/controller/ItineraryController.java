@@ -1,6 +1,7 @@
 package com.techelevator.controller;
 
 import com.techelevator.dao.ItineraryDao;
+import com.techelevator.dao.UserDao;
 import com.techelevator.model.Itinerary;
 import com.techelevator.model.Landmark;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class ItineraryController {
     @RequestMapping(path = "/create", method = RequestMethod.POST)
     public int create(@RequestBody Itinerary itinerary, @RequestParam(value = "user_id" int user_id)) {
 //    public int create(@RequestBody Itinerary itinerary) {
-        itineraryDao.create(itinerary);
+        int itineraryId = itineraryDao.create(itinerary);
         userDao.
     }
 

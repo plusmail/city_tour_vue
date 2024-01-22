@@ -17,10 +17,10 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "/create", method = RequestMethod.POST)
-    public int addItinerary(@RequestBody Itinerary itinerary) {
-        return userDao.addItinerary(userId, itineraryId);
-    }
+//    @ResponseStatus(HttpStatus.CREATED)
+//    @RequestMapping(path = "/create", method = RequestMethod.POST)
+//    public int addItinerary(@RequestBody Itinerary itinerary) {
+//        return userDao.addItinerary(userId, itineraryId);
+//    }
 
 }
