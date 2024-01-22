@@ -22,7 +22,7 @@ public class GoogleMaps {
                 .header("Content-Type", "application/json")
                 .header("X-Goog-Api-Key", API_KEY)
                 .header("X-Goog-FieldMask", "places.id,places.displayName," +
-                        "places.currentOpeningHours,places.accessibilityOptions,places.formattedAddress,places.location,places.subDestinations,places.types,places.priceLevel,places.rating")
+                        "places.currentOpeningHours,places.accessibilityOptions,places.formattedAddress,places.location,places.subDestinations,places.types,places.priceLevel,places.rating,places.photos")
                 .POST(BodyPublishers.ofString(requestBody))
                 .build();
 
