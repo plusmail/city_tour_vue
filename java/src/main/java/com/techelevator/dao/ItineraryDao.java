@@ -13,7 +13,7 @@ public interface ItineraryDao {
 
     Itinerary update(Itinerary itinerary);
 
-//    void delete(int itineraryId);
+    void delete(int itineraryId);
 
 //    void addLandmark(int itineraryId, String placeId);
 }

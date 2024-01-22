@@ -49,6 +49,11 @@ public class ItineraryController {
     public Itinerary update(@RequestBody Itinerary itinerary) {
         return itineraryDao.update(itinerary);
     }
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "/delete", method = RequestMethod.POST)
+    public void delete(@RequestParam(value = "itinerary_id") int itinerary) {
+        itineraryDao.delete(itinerary);
+    }
 
 
 

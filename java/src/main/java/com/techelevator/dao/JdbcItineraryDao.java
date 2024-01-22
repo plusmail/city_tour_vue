@@ -75,40 +75,40 @@ public class JdbcItineraryDao implements ItineraryDao {
             if (itinerary.getItineraryId() == 0)
                 throw new DaoException("Missing required value: itineraryId");
 
-//            if (itinerary.getEventDate() != null)
-//                itinerary.setEventDate(findById(itineraryId).getEventDate());
-//
-//            if (itinerary.getEventDate() != null)
-//                itinerary.setStartTime(findById(itineraryId).getStartTime());
-//
-//            if (itinerary.getEventDate() != null)
-//                itinerary.setEndTime(findById(itineraryId).getEndTime());
+            if (itinerary.getEventDate() == null)
+                itinerary.setEventDate(findById(itineraryId).getEventDate());
 
-//            jdbcTemplate.update(sql,
-//                    itinerary.getEventDate(),
-//                    itinerary.getStartTime(),
-//                    itinerary.getEndTime(),
-//                    itinerary.getItineraryId());
+            if (itinerary.getStartTime() == null)
+                itinerary.setStartTime(findById(itineraryId).getStartTime());
 
-//            updatedItinerary = findById(itineraryId);
+            if (itinerary.getEndTime() == null)
+                itinerary.setEndTime(findById(itineraryId).getEndTime());
+
+            jdbcTemplate.update(sql,
+                    itinerary.getEventDate(),
+                    itinerary.getStartTime(),
+                    itinerary.getEndTime(),
+                    itinerary.getItineraryId());
+
+            updatedItinerary = findById(itineraryId);
         } catch (Exception e) {
             String message = String.format("Itinerary not found: itinerary_id(%s)", itinerary.getItineraryId());
             throw new DaoException(message);
         }
-        updatedItinerary = itinerary;
         return updatedItinerary;
     }
 
-//    @Override
-//    public void delete(int itineraryId) {
-//        String sql = "  begin;delete FROM itinerary_landmarks WHERE itinerary_id=?;delete FROM itinerary WHERE itinerary_id=?;commit;";
-//
-//        try {
-//            jdbcTemplate.update(sql, itineraryId);
-//        } catch (Exception ex) {
-//            System.out.println("something went wrong: unable to delete");
-//        }
-//    }
+    @Override
+    public void delete(int itineraryId) {
+        String sql = "delete from itinerary where itinerary_id = ?";
+
+        try {
+            jdbcTemplate.update(sql, itineraryId);
+        } catch (Exception e) {
+            String message = String.format("Itinerary not delete: itinerary_id(%s)", itineraryId);
+            throw new DaoException(message);
+        }
+    }
 
 //    @Override
 //    public void addLandmark(int itineraryId, String placeId) {
