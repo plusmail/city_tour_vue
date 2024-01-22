@@ -76,12 +76,12 @@ public class ItineraryController {
     /*
      * localhost:9000/itinerary/add_landmark?itinerary_id=2003
      * */
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
-    public List<Landmark> findAllLandmarks(@RequestParam(value = "itinerary_id") int itineraryId,
-                                           @RequestParam(value = "place_id") String placeId) {
-        itineraryDao.addLandmark(itineraryId, placeId);
-    }
+//    @ResponseStatus(HttpStatus.OK)
+//    @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
+//    public List<Landmark> findAllLandmarks(@RequestParam(value = "itinerary_id") int itineraryId,
+//                                           @RequestParam(value = "place_id") String placeId) {
+//        return itineraryDao.addLandmark(itineraryId, placeId);
+//    }
 
 
 

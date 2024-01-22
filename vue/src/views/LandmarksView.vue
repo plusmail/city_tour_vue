@@ -159,6 +159,7 @@ const addToItinerary = async () => {
 SearchHeader{
   margin-bottom: 0.5rem;
   align-self: center;
+  /* display: flex; */
 }
 .accordion-header {
   display: flex;
@@ -166,4 +167,8 @@ SearchHeader{
   align-items: center;
   width: 100%;
 }
+/* AccordionTab{
+  width: 50%;
+} */
+
 </style>

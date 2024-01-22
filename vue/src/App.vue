@@ -40,8 +40,8 @@ export default {
           label: 'Search',
           command: () => {
             this.$router.push({ name: 'search' });
-          },
-          visible: this.$store.state.token === ''
+          }
+          // visible: this.$store.state.token === ''
         }
       ]
     };

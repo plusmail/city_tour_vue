@@ -6,19 +6,22 @@ import java.util.List;
 
 public class LandmarkResult {
     private DisplayName displayName;
-
+    private List<String> photos;
     private List<String> types;
-
     private  double rating;
-
     private  String formattedAddress;
-
     private AccessibilityOptions accessibilityOptions;
-
     private Location location;
-
     private CurrentOpeningHours currentOpeningHours;
     private String priceLevel;
+
+    public List<String> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<String> photos) {
+        this.photos = photos;
+    }
 
     public String getPriceLevel() {
         return priceLevel;
