@@ -30,7 +30,7 @@ CREATE TABLE itinerary(
 
 CREATE TABLE landmarks(
 	place_id varchar(50) primary key,
-	name varchar(250) NOT NULL,
+	name varchar(250),
 	address TEXT,
 	description TEXT,
 	price_range int check(price_range >= 1 and price_range <= 3 ),
