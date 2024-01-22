@@ -57,10 +57,10 @@ public class JdbcLandmarksDao implements LandmarksDao {
 //    public Landmarks delete(String placeId) {
 //        return null;
 //    }
-//
-//    private Landmarks mapRowToLandmark(SqlRowSet result) {
-//        Landmarks landmark = new Landmarks();
-//
-//        return landmark;
-//    }
+
+    private Landmarks mapRowToLandmark(SqlRowSet result) {
+        Landmarks landmark = new Landmarks();
+
+        return landmark;
+    }
 }

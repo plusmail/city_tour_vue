@@ -1,5 +1,6 @@
 package com.techelevator.controller;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.techelevator.dao.LandmarksDao;
 import com.techelevator.services.GoogleMaps;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +48,12 @@ public class LandmarksController {
         return googleMaps.findByPlaceId(placeId);
     }
 
+    /*
+     * localhost:9000/landmarks/search_photos?query=something
+     * */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(path = "/API_KEY", method = RequestMethod.POST)
-    public String getAPIKey(){
-        return googleMaps.getAPIKey();
+    @RequestMapping(path = "/search_photos", method = RequestMethod.GET)
+    public String searchPhotos(@RequestParam(value = "query") String query) {
+        return googleMaps.searchPhotos(query);
     }
 }
