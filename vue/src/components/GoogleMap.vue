@@ -42,12 +42,12 @@ export default {
 
 
 <style>
-.google-map-container {
+/* .google-map-container {
   width: 100%;
   height: 50rem;
 }
 iframe {
   width: 100%;
   height: 100%;
-}
+} */
 </style>

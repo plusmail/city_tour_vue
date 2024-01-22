@@ -13,10 +13,10 @@
         </template>
         <h2>{{ landmark.displayName?.text }}</h2>
         <p v-if="landmark.formattedAddress"><strong>Address:</strong> {{ landmark.formattedAddress }}</p>
-        <div v-if="typeof landmark.rating === 'number'">
-      <strong>Rating:</strong>
-      <Rating v-model="landmark.rating" :cancel="false" readonly></Rating>
-    </div>        
+        <!-- <div v-if="typeof landmark.rating === 'number'"> -->
+      <!-- <strong>Rating:</strong>
+      <Rating v-model="landmark.rating" :cancel="false" readonly></Rating> -->
+    <!-- </div>         -->
         <div v-if="landmark.currentOpeningHours && landmark.currentOpeningHours.weekdayDescriptions">
           <h3>Opening Hours</h3>
           <table v-if="landmark.currentOpeningHours && landmark.currentOpeningHours.weekdayDescriptions">
@@ -35,12 +35,18 @@
 </table>
         </div>
         <p v-else>No opening hours information available</p>
+        <div id="media-view">
+          <p v-if="landmark.location && landmark.location.latitude && landmark.location.longitude" id="map-media">
+          
+            <GoogleMap :displayName="landmark.displayName?.text" :city="selectedCity.value" />
 
-        <p v-if="landmark.location && landmark.location.latitude && landmark.location.longitude">
-          <GoogleMap :displayName="landmark.displayName?.text" :city="selectedCity.value" />
-
-          <strong>Location:</strong> Latitude: {{ landmark.location.latitude }}, Longitude: {{ landmark.location.longitude }}
-        </p>
+            <strong>Location:</strong> Latitude: {{ landmark.location.latitude }}, Longitude: {{ landmark.location.longitude }}
+            
+          </p>
+          <div id="image-media">
+            <img src="https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd8b08775-c331-4240-9183-0913c1af0cf5_1536x1024.png" />
+          </div>  
+        </div>
         <p v-if="landmark.types"><strong>Types:</strong> {{ landmark.types.join(', ') }}</p>
         <p v-if="landmark.accessibilityOptions"><strong>Accessibility Options:</strong> {{ formatAccessibilityOptions(landmark.accessibilityOptions) }}</p>
       </AccordionTab>
@@ -67,7 +73,6 @@ export default {
   components: {
     Accordion,
     AccordionTab,
-    Rating,
     SearchHeader,
     GoogleMap,
     Checkbox,
@@ -170,5 +175,24 @@ SearchHeader{
 /* AccordionTab{
   width: 50%;
 } */
+
+
+#media-view{
+  display: grid;
+  
+  
+}
+#map-media{
+  /* display: inline-block;
+  width: 35%; */
+
+}
+#image-media{
+  margin-left: 5%;
+  width: 40%;
+  height: 100%;
+}
+
+
 
 </style>

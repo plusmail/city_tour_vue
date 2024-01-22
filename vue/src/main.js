@@ -4,7 +4,7 @@ import { createStore } from './store'
 import router from './router'
 import axios from 'axios'
 import PrimeVue from 'primevue/config';
-import 'primevue/resources/themes/saga-blue/theme.css';
+import 'primevue/resources/themes/soho-dark/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 import { DeepChat } from 'deep-chat';
