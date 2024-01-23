@@ -87,33 +87,4 @@ public class ItineraryController implements BaseController {
                            @RequestParam(value = "place_id") String placeId) {
         return itineraryDao.addLandmarkToItinerary(itineraryId, placeId);
     }
-
-    /*
-     * localhost:9000/itinerary/add_landmark?itinerary_id=2003
-     * */
-//    @ResponseStatus(HttpStatus.OK)
-//    @RequestMapping(path = "/add", method = RequestMethod.POST)
-//    public int addItineraryToUser(@RequestParam(value = "itinerary_id") int itineraryId,
-//                                  @RequestParam(value = "place_id") String placeId) {
-//        return itineraryDao.addLandmarkToItinerary(itineraryId, placeId);
-//    }
-
-    /*
-     * localhost:9000/itinerary/add_landmark?itinerary_id=2003
-     * */
-//    @ResponseStatus(HttpStatus.OK)
-//    @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
-//    public List<Landmark> findAllLandmarks(@RequestParam(value = "itinerary_id") int itineraryId,
-//                                           @RequestParam(value = "place_id") String placeId) {
-//        return itineraryDao.addLandmark(itineraryId, placeId);
-//    }
-
-
-//    public void addLandmark(@RequestParam(value = "itinerary_id") int itineraryId, @RequestParam(value = "place_id") String placeId) {
-//        if (itineraryDao.findById(itineraryId) == null) {
-//            itineraryDao.create(itineraryId);
-//        } else {
-//            itineraryDao.addLandmark(itineraryId, placeId);
-//        }
-//    }
 }
