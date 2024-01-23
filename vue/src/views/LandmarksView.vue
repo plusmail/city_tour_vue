@@ -1,198 +1,246 @@
 <template>
-  <div>
-    <h1>Landmarks</h1>
-    <SearchHeader v-model="selectedCity" />
-    <Button label="Add To Itinerary" @click="addToItinerary" />
-    <Accordion>
-      <AccordionTab v-for="landmark in landmarks" :key="landmark.id">
-        <template #header>
-          <div class="accordion-header">
-          <span>{{ landmark.displayName?.text }}</span>
-          <Checkbox :value="landmark.id" v-model="selectedLandmarks" ></Checkbox>
-        </div>
-        </template>
-        <h2>{{ landmark.displayName?.text }}</h2>
-        <p v-if="landmark.formattedAddress"><strong>Address:</strong> {{ landmark.formattedAddress }}</p>
-        <!-- <div v-if="typeof landmark.rating === 'number'"> -->
-      <!-- <strong>Rating:</strong>
-      <Rating v-model="landmark.rating" :cancel="false" readonly></Rating> -->
-    <!-- </div>         -->
-        <div v-if="landmark.currentOpeningHours && landmark.currentOpeningHours.weekdayDescriptions">
-          <h3>Opening Hours</h3>
-          <table v-if="landmark.currentOpeningHours && landmark.currentOpeningHours.weekdayDescriptions">
-  <thead>
-    <tr>
-      <th>Day</th>
-      <th>Hours</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="(hours, index) in landmark.currentOpeningHours.weekdayDescriptions" :key="index">
-      <td>{{ getDayFromHoursString(hours) }}</td>
-      <td>{{ getHoursFromHoursString(hours) }}</td>
-    </tr>
-  </tbody>
-</table>
-        </div>
-        <p v-else>No opening hours information available</p>
-        <div id="media-view">
-          <p v-if="landmark.location && landmark.location.latitude && landmark.location.longitude" id="map-media">
-          
-            <GoogleMap :displayName="landmark.displayName?.text" :city="selectedCity.value" />
+    <div class="landmarks-container">
+      <h1>Explore Landmarks</h1>
+      <SearchHeader v-model="selectedCity" />
+      <Button label="Add To Itinerary" class="add-itinerary-btn" @click="addToItinerary" />
+  
+      <Accordion>
+        <AccordionTab v-for="landmark in landmarks" :key="landmark.id" class="landmark-tab">
+          <template #header>
+            <div class="accordion-header">
+              <span>{{ landmark.displayName?.text }}</span>
+              <Checkbox :value="landmark.id" v-model="selectedLandmarks" />
+            </div>
+          </template>
+  
+          <div class="landmark-details">
+            <div class="landmark-info">
+              <h2>{{ landmark.displayName?.text }}</h2>
+              <p v-if="landmark.formattedAddress"><strong>Address:</strong> {{ landmark.formattedAddress }}</p>
+              <p v-if="landmark.types"><strong>Types:</strong> {{ landmark.types.join(', ') }}</p>
+              <p v-if="landmark.accessibilityOptions"><strong>Accessibility Options:</strong> {{ formatAccessibilityOptions(landmark.accessibilityOptions) }}</p>
+            </div>
+  
+            <div class="landmark-media">
+              <!-- ImageMapSwap component will handle toggling between image and map -->
+              <ImageMapSwap 
+  v-if="landmark.photos.length > 0 || (landmark.location && landmark.location.latitude && landmark.location.longitude)"
+  :photos="landmark.photos"
+  :displayName="landmark.displayName?.text"
+  :city="selectedCity.value"
+/>
 
-            <strong>Location:</strong> Latitude: {{ landmark.location.latitude }}, Longitude: {{ landmark.location.longitude }}
-            
-          </p>
-          <div id="image-media">
-            <img src="https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd8b08775-c331-4240-9183-0913c1af0cf5_1536x1024.png" />
-          </div>  
-        </div>
-        <p v-if="landmark.types"><strong>Types:</strong> {{ landmark.types.join(', ') }}</p>
-        <p v-if="landmark.accessibilityOptions"><strong>Accessibility Options:</strong> {{ formatAccessibilityOptions(landmark.accessibilityOptions) }}</p>
-      </AccordionTab>
-    </Accordion>
-  </div>
-</template>
-
-
-
-
+              
+              <div v-if="landmark.currentOpeningHours && landmark.currentOpeningHours.weekdayDescriptions" class="hours-table">
+                <h3>Opening Hours</h3>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Day</th>
+                      <th>Hours</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(hours, index) in landmark.currentOpeningHours.weekdayDescriptions" :key="index">
+                      <td>{{ getDayFromHoursString(hours) }}</td>
+                      <td>{{ getHoursFromHoursString(hours) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </AccordionTab>
+      </Accordion>
+    </div>
+  </template>
   
   
-<script>
-import Checkbox from 'primevue/checkbox';
-import { ref, onMounted, watch } from 'vue';
-import Accordion from 'primevue/accordion';
-import AccordionTab from 'primevue/accordiontab';
-import LandmarkService from '../services/LandmarkService';
-import Rating from 'primevue/rating';
-import SearchHeader from '../components/SearchHeader.vue';
-import GoogleMap from '../components/GoogleMap.vue';
-
-export default {
-  components: {
-    Accordion,
-    AccordionTab,
-    SearchHeader,
-    GoogleMap,
-    Checkbox,
-  },
-  setup() {
-    const selectedCity = ref();
-    const groupedCities = ref();
-    const landmarks = ref([]);
-
-    const selectedLandmarks = ref([]);
-
-const addToItinerary = async () => {
-  try {
-    for (let id of selectedLandmarks.value) {
-      await fetch(`/itinerary/add/${id}`, {
-        method: 'POST',
+  
+  <script>
+  import Checkbox from 'primevue/checkbox';
+  import { ref, onMounted, watch } from 'vue';
+  import Accordion from 'primevue/accordion';
+  import AccordionTab from 'primevue/accordiontab';
+  import LandmarkService from '../services/LandmarkService';
+  import SearchHeader from '../components/SearchHeader.vue';
+  import GoogleMap from '../components/GoogleMap.vue';
+  import Button from 'primevue/button'; // Import Button component
+  import Image from 'primevue/image';
+import ImageMapSwap from '../components/ImageMapSwap.vue';
+  
+  export default {
+    components: {
+    ImageMapSwap,
+      Accordion,
+      AccordionTab,
+      SearchHeader,
+      Checkbox,
+      Button, // Register Button component
+    },
+    setup() {
+      const selectedCity = ref();
+      const landmarks = ref([]);
+      const selectedLandmarks = ref([]);
+  
+      const addToItinerary = async () => {
+        try {
+          for (let id of selectedLandmarks.value) {
+            await fetch(`/itinerary/add/${id}`, {
+              method: 'POST',
+            });
+          }
+        } catch (error) {
+          console.error('Error adding to itinerary:', error);
+        }
+      };
+  
+      const fetchLandmarks = async () => {
+        try {
+          const cityName = selectedCity.value?.value;
+          if (cityName) {
+            const response = await LandmarkService.returnLandmarks(cityName);
+            if (response.status === 200) {
+              landmarks.value = response.data.places;
+            }
+          } else {
+            console.error("City name is not defined");
+          }
+        } catch (error) {
+          console.error('Error fetching landmarks:', error);
+        }
+      };
+  
+      watch(selectedCity, (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+          fetchLandmarks();
+        }
       });
+  
+      const getDayFromHoursString = (hoursString) => {
+        return hoursString.split(':')[0];
+      };
+  
+      const getHoursFromHoursString = (hoursString) => {
+        return hoursString.split(':').slice(1).join(':').trim();
+      };
+  
+      const formatAccessibilityOptions = (options) => {
+        if (!options) {
+          return 'Not available';
+        }
+        return Object.entries(options)
+          .filter(([_, value]) => value)
+          .map(([key, _]) => humanizeString(key))
+          .join(', ');
+      };
+  
+      const humanizeString = (str) => {
+        return str.replace(/([A-Z])/g, ' $1').trim();
+      };
+  
+      onMounted(fetchLandmarks);
+  
+      return {
+        landmarks,
+        selectedCity,
+        selectedLandmarks,
+        getDayFromHoursString,
+        getHoursFromHoursString,
+        formatAccessibilityOptions
+      };
     }
-  } catch (error) {
-    console.error('Error adding to itinerary:', error);
   }
-};
-
-    const fetchLandmarks = async () => {
-  try {
-    const cityName = selectedCity.value?.value;
-
-    if (cityName) {
-      const response = await LandmarkService.returnLandmarks(cityName);
-      if (response.status === 200) {
-        landmarks.value = response.data.places;
-        
-      }
-    } else {
-      console.error("City name is not defined");
-    }
-  } catch (error) {
-    console.error('Error fetching landmarks:', error);
-  }
-  console.log(landmarks.value);
-
-};
-
-
-    watch(selectedCity, (newValue, oldValue) => {
-      if (newValue !== oldValue) {
-        fetchLandmarks();
-      }
-    });
-
-    const getDayFromHoursString = (hoursString) => {
-      return hoursString.split(':')[0];
-    };
-
-    const getHoursFromHoursString = (hoursString) => {
-      return hoursString.split(':').slice(1).join(':').trim();
-    };
-
-    const formatAccessibilityOptions = (options) => {
-      if (!options) {
-        return 'Not available';
-      }
-      return Object.entries(options)
-        .filter(([_, value]) => value)
-        .map(([key, _]) => humanizeString(key))
-        .join(', ');
-    };
-
-    const humanizeString = (str) => {
-      return str.replace(/([A-Z])/g, ' $1').trim();
-    };
-
-    onMounted(fetchLandmarks);
-
-    return {
-      landmarks,
-      selectedCity,
-      groupedCities,
-      getDayFromHoursString,
-      getHoursFromHoursString,
-      formatAccessibilityOptions
-    };
-  }
-}
-</script>
-
-
-<style scoped>
-SearchHeader{
-  margin-bottom: 0.5rem;
-  align-self: center;
-  /* display: flex; */
-}
-.accordion-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-/* AccordionTab{
-  width: 50%;
-} */
-
-
-#media-view{
-  display: grid;
+  </script>
   
   
-}
-#map-media{
-  /* display: inline-block;
-  width: 35%; */
-
-}
-#image-media{
-  margin-left: 5%;
-  width: 40%;
-  height: 100%;
-}
-
-
-
-</style>
+  <style scoped>
+  .landmarks-container {
+    padding: 1rem;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .add-itinerary-btn {
+    display: block;
+    margin: 1rem auto;
+    color: #ffffff;
+    background-color: #10c469; /* PrimeVue Soho Dark theme success color */
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+  }
+  
+  .landmark-tab {
+    margin-bottom: 1rem;
+    border: 1px solid #444; /* Slightly lighter border for contrast */
+    background-color: #262626; /* Dark background for tab content */
+    border-radius: 8px;
+  }
+  
+  .landmark-details {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    padding: 1rem;
+  }
+  
+  .landmark-info, .map-container, .image-container, .hours-table {
+    background-color: #333333; /* Dark backgrounds for content */
+    margin-top: 8px;    
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+  }
+  
+  .image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+  
+  .hours-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .hours-table th, .hours-table td {
+    border: 1px solid #555; /* Border color for table */
+    padding: 8px;
+    text-align: left;
+  }
+  
+  @media (max-width: 768px) {
+    .landmark-details {
+      grid-template-columns: 1fr;
+    }
+  
+    .accordion-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  
+  /* Additional styles for checkbox alignment */
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem; /* No affect, fix */
+  }
+  </style>
