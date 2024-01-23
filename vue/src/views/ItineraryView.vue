@@ -1,6 +1,8 @@
 <template>
     <div class="landmarks-container">
-      <h1>Explore Landmarks</h1>
+      <h1>Itinerary</h1>
+      <EventHeader></EventHeader>
+      <Button label="Create Itinerary" class="create-itinerary-btn" @click="createItinerary" />
       <Button label="Remove From Itinerary" class="remove-itinerary-btn" @click="removeFromItinerary" />
   
       <Accordion>
@@ -64,6 +66,7 @@
   import ItineraryService from '../services/ItineraryService';
   import Button from 'primevue/button'; // Import Button component
   import ImageMapSwap from '../components/ImageMapSwap.vue';
+  import EventHeader from '../components/EventHeader.vue';
   
   export default {
     components: {
@@ -71,7 +74,8 @@
       Accordion,
       AccordionTab,
       Checkbox,
-      Button, // Register Button component
+      Button,
+      EventHeader // Register Button component
     },
     setup() {
       const selectedCity = ref();
