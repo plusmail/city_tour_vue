@@ -7,6 +7,7 @@ import LoginView from '../views/LoginView.vue';
 import LogoutView from '../views/LogoutView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import LandmarksView from '../views/LandmarksView.vue';
+import ItineraryView from '../views/ItineraryView.vue';
 
 /**
  * The Vue Router is used to "direct" the browser to render a specific view component
@@ -50,11 +51,19 @@ const routes = [
     }
   },
   {
-    path: "/search",
+    path: "/",
     name: "search",
     component: LandmarksView,
     meta: {
       requiresAuth: false
+    }
+  },
+  {
+    path: "/itinerary",
+    name: "itinerary",
+    component: ItineraryView,
+    meta: {
+      requiresAuth: true
     }
   }
 ];

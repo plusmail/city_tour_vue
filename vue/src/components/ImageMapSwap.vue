@@ -5,8 +5,7 @@
         <GoogleMap :displayName="displayName" :city="city" />
       </div>
       <div v-else class="galleria-container">
-        <Galleria :showThumbnails="false" :value="galleriaImages" :responsiveOptions="responsiveOptions" :numVisible="1" 
-                  containerStyle="max-width: 640px">
+        <Galleria :showThumbnails="false" :showIndicators="true" :changeItemOnIndicatorHover="true" :showIndicatorsOnItem="inside" :indicatorsPosition="position" :value="galleriaImages" :responsiveOptions="responsiveOptions" :numVisible="5">
           <template #item="slotProps">
             <img :src="getPhotoUrl(slotProps.item.name)" :alt="slotProps.item.alt" style="width: 100%" />
           </template>
@@ -85,6 +84,12 @@
   }
   
   .google-map-container {
+    width: 100%;
+    height: 450px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  img{
     width: 100%;
     height: 450px;
     border-radius: 8px;
