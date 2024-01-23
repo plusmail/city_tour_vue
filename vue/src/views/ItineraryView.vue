@@ -2,7 +2,7 @@
     <div class="landmarks-container">
       <h1>Explore Landmarks</h1>
       <SearchHeader v-model="selectedCity" />
-      <Button label="Add To Itinerary" class="add-itinerary-btn" @click="addToItinerary" />
+      <Button label="Remove From Itinerary" class="remove-itinerary-btn" @click="removeFromItinerary" />
   
       <Accordion>
         <AccordionTab v-for="landmark in landmarks" :key="landmark.id" class="landmark-tab">
@@ -81,15 +81,15 @@
       const landmarks = ref([]);
       const selectedLandmarks = ref([]);
   
-      const addToItinerary = async () => {
+      const removeFromItinerary = async () => {
         try {
           for (let id of selectedLandmarks.value) {
-            await fetch(`/itinerary/add_landmark?itinerary_id=${id}`, {
+            await fetch(`/itinerary/delete?itinerary_id=${id}`, {
               method: 'POST',
             });
           }
         } catch (error) {
-          console.error('Error adding to itinerary:', error);
+          console.error('Error removing from itinerary:', error);
         }
       };
   
