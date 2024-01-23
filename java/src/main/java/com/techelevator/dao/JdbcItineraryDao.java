@@ -117,7 +117,7 @@ public class JdbcItineraryDao implements ItineraryDao {
     }
 
     @Override
-    public int addLandmark(int itineraryId, String placeId) {
+    public int addLandmarkToItinerary(int itineraryId, String placeId) {
         String sql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id)\n" +
                 "VALUES (?, ?);";
         try {
@@ -133,7 +133,7 @@ public class JdbcItineraryDao implements ItineraryDao {
     }
 
     @Override
-    public void removeLandmark(String placeId) {
+    public void removeLandmarkFromItinerary(String placeId) {
         String sql = "delete from itinerary_landmarks where place_id = ?;";
 
         try {

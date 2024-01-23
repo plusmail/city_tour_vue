@@ -85,18 +85,18 @@ public class ItineraryController implements BaseController {
     @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
     public int addLandmark(@RequestParam(value = "itinerary_id") int itineraryId,
                            @RequestParam(value = "place_id") String placeId) {
-        return itineraryDao.addLandmark(itineraryId, placeId);
+        return itineraryDao.addLandmarkToItinerary(itineraryId, placeId);
     }
 
     /*
      * localhost:9000/itinerary/add_landmark?itinerary_id=2003
      * */
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(path = "/add_la", method = RequestMethod.POST)
-    public int addItineraryToUser(@RequestParam(value = "itinerary_id") int itineraryId,
-                                  @RequestParam(value = "place_id") String placeId) {
-        return itineraryDao.addLandmark(itineraryId, placeId);
-    }
+//    @ResponseStatus(HttpStatus.OK)
+//    @RequestMapping(path = "/add", method = RequestMethod.POST)
+//    public int addItineraryToUser(@RequestParam(value = "itinerary_id") int itineraryId,
+//                                  @RequestParam(value = "place_id") String placeId) {
+//        return itineraryDao.addLandmarkToItinerary(itineraryId, placeId);
+//    }
 
     /*
      * localhost:9000/itinerary/add_landmark?itinerary_id=2003
