@@ -2,7 +2,6 @@ package com.techelevator.controller;
 
 //import com.techelevator.tenmo.model.Account;
 
-import com.techelevator.model.account.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public interface BaseController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/whoami", method = RequestMethod.GET)
-    public String whoami();
+    public String whoAmI();
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/info", method = RequestMethod.GET)

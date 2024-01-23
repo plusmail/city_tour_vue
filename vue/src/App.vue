@@ -45,7 +45,7 @@ export default {
         {
           label: 'Itinerary',
           command: () => {
-            this.$router.push({ name: 'itineray' });
+            this.$router.push({ name: 'itinerary' });
           }
         }
       ]

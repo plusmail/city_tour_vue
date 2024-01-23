@@ -20,13 +20,13 @@ public class ItineraryController implements BaseController {
     private UserDao userDao;
 
     @Override
-    public String whoami() {
+    public String whoAmI() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     @Override
     public int currentUserId() {
-        String username = whoami();
+        String username = whoAmI();
         return userDao.getUserByUsername(username).getId();
     }
 
