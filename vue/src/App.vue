@@ -41,7 +41,12 @@ export default {
           command: () => {
             this.$router.push({ name: 'search' });
           }
-          // visible: this.$store.state.token === ''
+        },
+        {
+          label: 'Itinerary',
+          command: () => {
+            this.$router.push({ name: 'itineray' });
+          }
         }
       ]
     };

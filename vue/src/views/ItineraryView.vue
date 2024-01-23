@@ -1,7 +1,6 @@
 <template>
     <div class="landmarks-container">
       <h1>Explore Landmarks</h1>
-      <SearchHeader v-model="selectedCity" />
       <Button label="Remove From Itinerary" class="remove-itinerary-btn" @click="removeFromItinerary" />
   
       <Accordion>
@@ -62,8 +61,7 @@
   import { ref, onMounted, watch } from 'vue';
   import Accordion from 'primevue/accordion';
   import AccordionTab from 'primevue/accordiontab';
-  import LandmarkService from '../services/LandmarkService';
-  import SearchHeader from '../components/SearchHeader.vue';
+  import ItineraryService from '../services/ItineraryService';
   import Button from 'primevue/button'; // Import Button component
   import ImageMapSwap from '../components/ImageMapSwap.vue';
   
@@ -72,7 +70,6 @@
     ImageMapSwap,
       Accordion,
       AccordionTab,
-      SearchHeader,
       Checkbox,
       Button, // Register Button component
     },
@@ -97,12 +94,12 @@
         try {
           const cityName = selectedCity.value?.value;
           if (cityName) {
-            const response = await LandmarkService.returnLandmarks(cityName);
+            const response = await ItineraryService.returnAllItinerary();
             if (response.status === 200) {
               landmarks.value = response.data.places;
             }
           } else {
-            console.error("City name is not defined");
+            console.error("Error fetching landmarks by Itinerary ID");
           }
         } catch (error) {
           console.error('Error fetching landmarks:', error);
