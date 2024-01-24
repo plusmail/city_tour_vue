@@ -1,7 +1,6 @@
 package com.techelevator.controller;
 
 import com.techelevator.dao.ItineraryDao;
-import com.techelevator.dao.JdbcItineraryDao;
 import com.techelevator.dao.UserDao;
 import com.techelevator.model.Itinerary;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,9 +96,4 @@ public class ItineraryController implements BaseController {
                                            @RequestParam(value = "place_id") String placeId) {
         itineraryDao.removeLandmarkFromItinerary(itineraryId, placeId);
     }
-
-//    @PostMapping("/add_landmark")
-//    public int addLandmark(@RequestBody JdbcItineraryDao.LandmarkRequest request) {
-//        return itineraryDao.addLandmarkToItinerary(request.getItineraryId(), request.getPlaceId());
-//    }
 }

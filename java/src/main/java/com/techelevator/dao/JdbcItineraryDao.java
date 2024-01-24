@@ -32,7 +32,7 @@ public class JdbcItineraryDao implements ItineraryDao {
 
             if (result.next()) {
                 int itineraryId = result.getInt("itinerary_id");
-                itinerary.setItineraryId(itineraryId); // Set the itinerary_id back into the Itinerary object
+                itinerary.setItineraryId(itineraryId);
                 return itineraryId;
             } else {
                 throw new DaoException("Itinerary not created");
@@ -126,7 +126,7 @@ public class JdbcItineraryDao implements ItineraryDao {
     public int addLandmarkToItinerary(int itineraryId, String placeId) {
         String sql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id) VALUES (?, ?) returning itinerary_id;";
         try {
-            System.out.println("Inserting place ID: " + placeId + " into itinerary ID: " + itineraryId); // Log the place ID and itinerary ID
+            System.out.println("Inserting place ID: " + placeId + " into itinerary ID: " + itineraryId);
             SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itineraryId, placeId);
             if (result.next()) {
                 return result.getInt("itinerary_id");
@@ -161,27 +161,6 @@ public class JdbcItineraryDao implements ItineraryDao {
             throw new DaoException(message);
         }
     }
-
-//    public static class LandmarkRequest {
-//        private int itineraryId;
-//        private String placeId;
-//
-//        public int getItineraryId() {
-//            return itineraryId;
-//        }
-//
-//        public void setItineraryId(int itineraryId) {
-//            this.itineraryId = itineraryId;
-//        }
-//
-//        public String getPlaceId() {
-//            return placeId;
-//        }
-//
-//        public void setPlaceId(String placeId) {
-//            this.placeId = placeId;
-//        }
-//    }
 
     private Itinerary mapRowToItinerary(SqlRowSet result) {
         Itinerary itinerary = new Itinerary();
