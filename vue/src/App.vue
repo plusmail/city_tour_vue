@@ -20,6 +20,7 @@ export default {
           label: "Home",
           command: () => {
             this.$router.push({ name: "home" });
+            
           },
         },
         {

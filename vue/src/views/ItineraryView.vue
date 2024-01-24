@@ -34,7 +34,7 @@
       <h2><i class="pi pi-fw pi-map-marker"></i> Landmarks</h2>
       <div class="landmarks-list">
         <div class="landmark-item">
-          <Dropdown class="landmark-name" :options="landmarks" optionLabel="placeId" v-model="selectedPlaceId" 
+          <Dropdown class="landmark-name" :options="landmarks" optionLabel="placeId" v-model="dropdownLandmarks" 
               placeholder="Select a Landmark"></Dropdown>
           <Dropdown class="itinerary-name" :options="itineraries" optionLabel="name" v-model="selectedItineraryId" 
               placeholder="Select an Itinerary"></Dropdown>
@@ -81,6 +81,7 @@ export default {
     const itineraries = ref([]);
     const selectedItineraryId = ref(null);
     const selectedPlaceId = ref(null);
+    const dropdownLandmarks = ref([]);
 
     async function getLandmarkDetails(placeId) {
       try {
@@ -101,10 +102,28 @@ export default {
       return date.toISOString().split("T")[0];
     };
 
-    const fetchLandmarks = async () => {
+    const fetchItineraryLandmarks = async () => {
       try {
         const response = await ItineraryService.returnAllItinerary();
         landmarks.value = response.data;
+      } catch (error) {
+        console.error("Error fetching landmarks:", error);
+      }
+    };
+    
+    fetchItineraryLandmarks();
+
+    const fetchLandmarks = async () => {
+      try {
+        const cityName = selectedCity.value?.value;
+        if (cityName) {
+          const response = await LandmarkService.returnLandmarks(cityName);
+          if (response.status === 200) {
+            landmarks.value = response.data.places;
+          }
+        } else {
+          console.error("City name is not defined");
+        }
       } catch (error) {
         console.error("Error fetching landmarks:", error);
       }
@@ -214,7 +233,8 @@ export default {
       errors,
       itineraries,
       selectedItineraryId,
-      selectedPlaceId
+      selectedPlaceId,
+      dropdownLandmarks
     };
   },
 };
