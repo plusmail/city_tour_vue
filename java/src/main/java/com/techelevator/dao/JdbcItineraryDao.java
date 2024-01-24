@@ -112,7 +112,7 @@ public class JdbcItineraryDao implements ItineraryDao {
     @Override
     public void delete(int itineraryId) {
         String sql = "delete from users_itinerary where itinerary_id = ?;\n" +
-                     "delete from itinerary where itinerary_id = ?;";
+                "delete from itinerary where itinerary_id = ?;";
 
         try {
             jdbcTemplate.update(sql, itineraryId);
@@ -139,9 +139,19 @@ public class JdbcItineraryDao implements ItineraryDao {
     }
 
 
-
     @Override
-    public void removeLandmarkFromItinerary(String placeId) {
+    public void removeLandmarkFromItinerary(int itineraryId, String placeId) {
+        String sql = "delete from itinerary_landmarks where itinerary_id = ? and place_id = ?;";
+
+        try {
+            jdbcTemplate.update(sql, itineraryId, placeId);
+        } catch (Exception e) {
+            String message = String.format("Landmark not removed from itinerary: itinerary_id(%s), place_id(%s)", itineraryId, placeId);
+            throw new DaoException(message);
+        }
+    }
+    @Override
+    public void removeLandmarkFromAllItinerary(String placeId) {
         String sql = "delete from itinerary_landmarks where place_id = ?;";
 
         try {
@@ -152,26 +162,26 @@ public class JdbcItineraryDao implements ItineraryDao {
         }
     }
 
-    public static class LandmarkRequest {
-        private int itineraryId;
-        private String placeId;
-
-        public int getItineraryId() {
-            return itineraryId;
-        }
-
-        public void setItineraryId(int itineraryId) {
-            this.itineraryId = itineraryId;
-        }
-
-        public String getPlaceId() {
-            return placeId;
-        }
-
-        public void setPlaceId(String placeId) {
-            this.placeId = placeId;
-        }
-    }
+//    public static class LandmarkRequest {
+//        private int itineraryId;
+//        private String placeId;
+//
+//        public int getItineraryId() {
+//            return itineraryId;
+//        }
+//
+//        public void setItineraryId(int itineraryId) {
+//            this.itineraryId = itineraryId;
+//        }
+//
+//        public String getPlaceId() {
+//            return placeId;
+//        }
+//
+//        public void setPlaceId(String placeId) {
+//            this.placeId = placeId;
+//        }
+//    }
 
     private Itinerary mapRowToItinerary(SqlRowSet result) {
         Itinerary itinerary = new Itinerary();

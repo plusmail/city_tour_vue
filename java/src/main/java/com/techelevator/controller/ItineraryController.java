@@ -80,10 +80,26 @@ public class ItineraryController implements BaseController {
     }
 
     /*
-     * localhost:9000/itinerary/add_landmark?itinerary_id=2003
+     * localhost:9000/itinerary/add_landmark?itinerary_id=2003&place_id=some_string
      * */
-    @PostMapping("/add_landmark")
-    public int addLandmark(@RequestBody JdbcItineraryDao.LandmarkRequest request) {
-        return itineraryDao.addLandmarkToItinerary(request.getItineraryId(), request.getPlaceId());
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
+    public int addLandmarkToItinerary(@RequestParam(value = "itinerary_id") int itineraryId,
+                           @RequestParam(value = "place_id") String placeId) {
+        return itineraryDao.addLandmarkToItinerary(itineraryId, placeId);
     }
+    /*
+     * localhost:9000/itinerary/remove_landmark?itinerary_id=2003&place_id=some_string
+     * */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
+    public void removeLandmarkFromItinerary(@RequestParam(value = "itinerary_id") int itineraryId,
+                                           @RequestParam(value = "place_id") String placeId) {
+        itineraryDao.removeLandmarkFromItinerary(itineraryId, placeId);
+    }
+
+//    @PostMapping("/add_landmark")
+//    public int addLandmark(@RequestBody JdbcItineraryDao.LandmarkRequest request) {
+//        return itineraryDao.addLandmarkToItinerary(request.getItineraryId(), request.getPlaceId());
+//    }
 }

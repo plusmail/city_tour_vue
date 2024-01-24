@@ -42,7 +42,7 @@ public class LandmarksController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/delete", method = RequestMethod.POST)
     public void delete(@RequestParam(value = "place_id") String placeId) {
-        itineraryDao.removeLandmarkFromItinerary(placeId);
+        itineraryDao.removeLandmarkFromAllItinerary(placeId);
         landmarksDao.delete(placeId);
     }
 
