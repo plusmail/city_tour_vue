@@ -36,7 +36,7 @@
         <div class="landmark-item">
           <Dropdown class="landmark-name" :options="landmarks" optionLabel="placeId" v-model="dropdownLandmarks" 
               placeholder="Select a Landmark"></Dropdown>
-          <Dropdown class="itinerary-name" :options="itineraries" optionLabel="name" v-model="selectedItineraryId" 
+          <Dropdown class="itinerary-name" :options="itineraries" optionLabel="name" v-model="selectedItinerary" 
               placeholder="Select an Itinerary"></Dropdown>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default {
     const message = reactive({ text: "", type: "" });
     const errors = reactive({ name: "", date: "" });
     const itineraries = ref([]);
-    const selectedItineraryId = ref(null);
+    const selectedItinerary = ref();
     const selectedPlaceId = ref(null);
     const dropdownLandmarks = ref([]);
 
@@ -184,7 +184,8 @@ export default {
       if (confirm("Are you sure you want to delete this itinerary?")) {
         isLoading.value = true;
         try {
-          await ItineraryService.deleteItinerary(createdItineraryId.value);
+          console.log(selectedItinerary.value);
+          await ItineraryService.deleteItinerary(selectedItinerary.value.itineraryId);
           message.text = "Itinerary deleted successfully.";
           message.type = "success";
         } catch (error) {
@@ -232,7 +233,7 @@ export default {
       message,
       errors,
       itineraries,
-      selectedItineraryId,
+      selectedItinerary,
       selectedPlaceId,
       dropdownLandmarks
     };

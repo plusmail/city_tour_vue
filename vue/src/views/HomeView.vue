@@ -2,6 +2,7 @@
   <div class="home">
     <h1>Home</h1>
     <GoogleMap/>
+
   </div>
 </template>
 
@@ -37,5 +38,6 @@ export default {
   // }
 }
   }
+}
 }
 </script>

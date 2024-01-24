@@ -115,7 +115,7 @@ public class JdbcItineraryDao implements ItineraryDao {
                 "delete from itinerary where itinerary_id = ?;";
 
         try {
-            jdbcTemplate.update(sql, itineraryId);
+            jdbcTemplate.update(sql, itineraryId, itineraryId);
         } catch (Exception e) {
             String message = String.format("Itinerary not delete: itinerary_id(%s)", itineraryId);
             throw new DaoException(message);
