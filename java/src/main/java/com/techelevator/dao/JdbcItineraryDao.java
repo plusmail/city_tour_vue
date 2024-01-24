@@ -124,7 +124,7 @@ public class JdbcItineraryDao implements ItineraryDao {
 
     @Override
     public int addLandmarkToItinerary(int itineraryId, String placeId) {
-        String sql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id) VALUES (?, ?);";
+        String sql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id) VALUES (?, ?) returning itinerary_id;";
         try {
             System.out.println("Inserting place ID: " + placeId + " into itinerary ID: " + itineraryId); // Log the place ID and itinerary ID
             SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itineraryId, placeId);
