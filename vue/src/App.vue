@@ -7,50 +7,51 @@
 </template>
 
 <script>
-import Menubar from 'primevue/menubar';
+import Menubar from "primevue/menubar";
 
 export default {
   components: {
-    Menubar
+    Menubar,
   },
   data() {
     return {
       items: [
         {
-          label: 'Home',
+          label: "Home",
           command: () => {
-            this.$router.push({ name: 'home' });
-          }
-        },
-        {
-          label: 'Logout',
-          command: () => {
-            this.$router.push({ name: 'logout' });
+            this.$router.push({ name: "home" });
           },
-          visible: this.$store.state.token !== ''
         },
         {
-          label: 'Login',
+          label: "Logout",
           command: () => {
-            this.$router.push({ name: 'login' });
+            this.$router.push({ name: "logout" });
           },
-          visible: this.$store.state.token === ''
+          visible: this.$store.state.token !== "",
         },
         {
-          label: 'Search',
+          label: "Login",
           command: () => {
-            this.$router.push({ name: 'search' });
-          }
+            this.$router.push({ name: "login" });
+          },
+          visible: this.$store.state.token === "",
         },
         {
-          label: 'Itinerary',
+          label: "Search",
           command: () => {
-            this.$router.push({ name: 'itinerary' });
-          }
-        }
-      ]
+            this.$router.push({ name: "search" });
+          },
+        },
+        {
+          label: "Itinerary",
+          command: () => {
+            this.$router.push({ name: "itinerary" });
+          },
+          visible: this.$store.state.token !== "",
+        },
+      ],
     };
-  }
+  },
 };
 </script>
 

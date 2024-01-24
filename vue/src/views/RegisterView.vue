@@ -31,7 +31,8 @@ import authService from '../services/AuthService';
 export default {
   components: {
     InputText,
-    Button
+    Button,
+    Password
   },
   data() {
     return {

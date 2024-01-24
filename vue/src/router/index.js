@@ -51,7 +51,7 @@ const routes = [
     }
   },
   {
-    path: "/",
+    path: "/search",
     name: "search",
     component: LandmarksView,
     meta: {

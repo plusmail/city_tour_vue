@@ -5,11 +5,12 @@
       :src="mapUrl"
       width="100%"
       height="450"
-      style="border:0;"
+      style="border: 0"
       allowfullscreen
       aria-hidden="false"
       tabindex="0"
-      title="Google Map">
+      title="Google Map"
+    >
     </iframe>
   </div>
 </template>
@@ -19,12 +20,12 @@ export default {
   props: {
     displayName: {
       type: String,
-      default: ''
+      default: "",
     },
     city: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
   computed: {
     mapUrl() {
@@ -35,8 +36,8 @@ export default {
       const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
       const query = encodeURIComponent(`${this.displayName},${this.city}`);
       return `${baseUrl}?key=${apiKey}&q=${query}&zoom=18&maptype=satellite`;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -13,29 +13,35 @@ import java.util.List;
 
 @Component
 public class JdbcItineraryDao implements ItineraryDao {
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Override
     public int create(Itinerary itinerary) {
-        String sql = "insert into itinerary (event_date, start_time, end_time)\n" +
-                "values (?, ?, ?) returning itinerary_id";
+        String sql = "INSERT INTO itinerary (name, event_date, start_time, end_time, starting_point) " +
+                "VALUES (?, ?, ?, ?, ?) RETURNING itinerary_id";
 
         try {
-            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itinerary.getEventDate(), itinerary.getStartTime(), itinerary.getEndTime());
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql,
+                    itinerary.getName(),
+                    itinerary.getEventDate(),
+                    itinerary.getStartTime(),
+                    itinerary.getEndTime(),
+                    itinerary.getStartingPoint());
 
             if (result.next()) {
-                return result.getInt("itinerary_id");
+                int itineraryId = result.getInt("itinerary_id");
+                itinerary.setItineraryId(itineraryId); // Set the itinerary_id back into the Itinerary object
+                return itineraryId;
             } else {
                 throw new DaoException("Itinerary not created");
             }
         } catch (Exception e) {
-            throw new DaoException("Itinerary not created");
+            throw new DaoException("Itinerary not created: " + e.getMessage());
         }
     }
 
-//    @Override
-//    public int add(Itinerary itinerary, int userId) {
 
     @Override
     public Itinerary findById(int itineraryId) {
@@ -118,19 +124,21 @@ public class JdbcItineraryDao implements ItineraryDao {
 
     @Override
     public int addLandmarkToItinerary(int itineraryId, String placeId) {
-        String sql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id)\n" +
-                "VALUES (?, ?);";
+        String sql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id) VALUES (?, ?);";
         try {
+            System.out.println("Inserting place ID: " + placeId + " into itinerary ID: " + itineraryId); // Log the place ID and itinerary ID
             SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itineraryId, placeId);
             if (result.next()) {
                 return result.getInt("itinerary_id");
             } else {
-                throw new DaoException("Itinerary not created");
+                throw new DaoException("Landmark not added to itinerary");
             }
         } catch (Exception e) {
-            throw new DaoException("Landmark not added to itinerary");
+            throw new DaoException("Landmark not added to itinerary: " + e.getMessage());
         }
     }
+
+
 
     @Override
     public void removeLandmarkFromItinerary(String placeId) {
@@ -144,12 +152,31 @@ public class JdbcItineraryDao implements ItineraryDao {
         }
     }
 
+    public static class LandmarkRequest {
+        private int itineraryId;
+        private String placeId;
 
+        public int getItineraryId() {
+            return itineraryId;
+        }
+
+        public void setItineraryId(int itineraryId) {
+            this.itineraryId = itineraryId;
+        }
+
+        public String getPlaceId() {
+            return placeId;
+        }
+
+        public void setPlaceId(String placeId) {
+            this.placeId = placeId;
+        }
+    }
 
     private Itinerary mapRowToItinerary(SqlRowSet result) {
         Itinerary itinerary = new Itinerary();
-
         itinerary.setItineraryId(result.getInt("itinerary_id"));
+        itinerary.setName(result.getString("name"));
 
         if (result.getDate("event_date") != null)
             itinerary.setEventDate(result.getDate("event_date").toLocalDate());
@@ -159,6 +186,8 @@ public class JdbcItineraryDao implements ItineraryDao {
 
         if (result.getTime("end_time") != null)
             itinerary.setEndTime(result.getTime("end_time").toLocalTime());
+
+        itinerary.setStartingPoint(result.getString("starting_point"));
 
         return itinerary;
     }

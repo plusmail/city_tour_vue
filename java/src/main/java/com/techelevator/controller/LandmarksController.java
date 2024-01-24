@@ -64,15 +64,16 @@ public class LandmarksController {
         String query = city + "things to do";
         return googleMaps.search(query);
     }
-
     /*
-     * localhost:9000/landmarks/find?place_id=1234567890
-     * */
+     * Fetch landmark details by placeId.
+     * GET localhost:9000/landmarks/find_by_place_id/{placeId}
+     */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/find_by_place_id/{placeId}", method = RequestMethod.GET)
     public String findByPlaceId(@PathVariable String placeId) {
         return googleMaps.findByPlaceId(placeId);
     }
+
 
     /*
      * localhost:9000/landmarks/search_photos?query=new york

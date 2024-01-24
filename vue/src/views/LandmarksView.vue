@@ -2,11 +2,12 @@
   <div class="landmarks-container">
     <h1>Explore Landmarks</h1>
     <SearchHeader v-model="selectedCity" />
-    <Button
-      label="Add To Itinerary"
-      class="add-itinerary-btn"
-      @click="addToItinerary"
-    />
+    <div id='itinerary-select-area'>
+    <Dropdown :options="itineraries" optionLabel="name" v-model="selectedItineraryId" 
+              placeholder="Select an Itinerary"></Dropdown>
+    <Button label="Add To Itinerary" class="add-itinerary-btn" 
+            @click="addToItinerary"></Button>
+    </div>
 
     <Accordion>
       <AccordionTab
@@ -40,7 +41,6 @@
           </div>
 
           <div class="landmark-media">
-            <!-- ImageMapSwap component will handle toggling between image and map -->
             <ImageMapSwap
               v-if="
                 landmark.photos.length > 0 ||
@@ -86,17 +86,16 @@
     </Accordion>
   </div>
 </template>
-  
-  
-  
-  <script>
+
+<script>
 import Checkbox from "primevue/checkbox";
 import { ref, onMounted, watch } from "vue";
 import Accordion from "primevue/accordion";
 import AccordionTab from "primevue/accordiontab";
+import Dropdown from "primevue/dropdown";
 import LandmarkService from "../services/LandmarkService";
 import SearchHeader from "../components/SearchHeader.vue";
-import Button from "primevue/button"; // Import Button component
+import Button from "primevue/button";
 import ImageMapSwap from "../components/ImageMapSwap.vue";
 import ItineraryService from "../services/ItineraryService";
 
@@ -107,29 +106,42 @@ export default {
     AccordionTab,
     SearchHeader,
     Checkbox,
-    Button, // Register Button component
+    Button,
+    Dropdown
   },
   setup() {
     const selectedCity = ref();
     const landmarks = ref([]);
     const selectedLandmarks = ref([]);
+    const selectedItineraryId = ref(null);
+    const itineraries = ref([]);
 
-    const addToItinerary = async () => {
+    const fetchItineraries = async () => {
       try {
-        for (let id of selectedLandmarks.value) {
-          if (id) {
-            const response = await ItineraryService.addLandmarksToItinerary(id);
-            if (response.status === 200) {
-              landmarks.value = response.data.places;
-            }
-          } else {
-            console.error("Error adding selected IDs to Itinerary");
-          }
-        }
+        const response = await ItineraryService.returnAllItinerary();
+        itineraries.value = response.data;
       } catch (error) {
-        console.error("Error adding landmarks:", error);
+        console.error("Error fetching itineraries:", error);
       }
     };
+
+    const addToItinerary = async () => {
+  if (!selectedItineraryId.value) {
+    console.error("No itinerary selected");
+    return;
+  }
+  try {
+    for (let id of selectedLandmarks.value) {
+      console.log("Adding place ID to itinerary:", id); // Log the place ID
+      if (id) {
+        await ItineraryService.addLandmarkToItinerary(selectedItineraryId.value, id);
+      }
+    }
+  } catch (error) {
+    console.error("Error adding landmarks to itinerary:", error);
+  }
+};
+
 
     const fetchLandmarks = async () => {
       try {
@@ -151,6 +163,10 @@ export default {
       if (newValue !== oldValue) {
         fetchLandmarks();
       }
+    });
+
+    onMounted(() => {
+      fetchItineraries();
     });
 
     const getDayFromHoursString = (hoursString) => {
@@ -175,22 +191,24 @@ export default {
       return str.replace(/([A-Z])/g, " $1").trim();
     };
 
-    onMounted(fetchLandmarks);
-
     return {
       landmarks,
       selectedCity,
       selectedLandmarks,
+      selectedItineraryId,
+      itineraries,
+      addToItinerary,
       getDayFromHoursString,
       getHoursFromHoursString,
       formatAccessibilityOptions,
+      humanizeString
     };
   },
 };
 </script>
-  
-  
-  <style scoped>
+
+
+<style scoped>
 .landmarks-container {
   padding: 1rem;
   max-width: 1200px;
@@ -201,12 +219,20 @@ h1 {
   text-align: center;
   margin-bottom: 2rem;
 }
+#itinerary-select-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
 
 .add-itinerary-btn {
   display: block;
   margin: 1rem auto;
   color: #ffffff;
-  background-color: #10c469; /* PrimeVue Soho Dark theme success color */
+  background-color: #10c469;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -225,8 +251,8 @@ h1 {
 
 .landmark-tab {
   margin-bottom: 1rem;
-  border: 1px solid #444; /* Slightly lighter border for contrast */
-  background-color: #262626; /* Dark background for tab content */
+  border: 1px solid #444; 
+  background-color: #262626; 
   border-radius: 8px;
 }
 
@@ -242,11 +268,11 @@ h1 {
 .image-container,
 .hours-table,
 #select-checkmark-area {
-  background-color: #333333; /* Dark backgrounds for content */
+  background-color: #333333; 
   margin-top: 8px;
   padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
 }
 
 #select-checkmark-area {
@@ -268,7 +294,7 @@ h1 {
 
 .hours-table th,
 .hours-table td {
-  border: 1px solid #555; /* Border color for table */
+  border: 1px solid #555; 
   padding: 8px;
   text-align: left;
 }
@@ -284,10 +310,10 @@ h1 {
   }
 }
 
-/* Additional styles for checkbox alignment */
+
 .checkbox-container {
   display: flex;
   align-items: center;
-  column-gap: 0.5rem; /* No affect, fix */
+  column-gap: 0.5rem;
 }
 </style>

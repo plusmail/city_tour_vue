@@ -16,7 +16,7 @@ import Calendar from "primevue/calendar";
 
 export default {
   components: {
-    Calendar
+    Calendar,
   },
   setup(props, { emit }) {
     const selectedDateTime = ref();
@@ -26,7 +26,7 @@ export default {
     });
 
     return {
-      selectedDateTime
+      selectedDateTime,
     };
   },
 };

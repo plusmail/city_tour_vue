@@ -11,8 +11,4 @@ public interface LandmarksDao {
     void delete(String placeId);
 
     List<Landmark> listByItineraryId(int itineraryId);
-
-//    Landmarks findByPlaceId(String placeId);
-//    List<Landmarks> list();
-//    Landmarks update(Landmarks landmark, String placeId);
 }

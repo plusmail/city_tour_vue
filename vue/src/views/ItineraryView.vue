@@ -1,319 +1,256 @@
 <template>
   <div class="itinerary-container">
-    <h1>Itinerary</h1>
-    <div id="calendar-container">
-      <EventHeader />
-      <Button
-        label="Create Itinerary"
-        class="create-itinerary-btn"
-        @click="createItinerary"
-      />
+    <h1><i class="pi pi-fw pi-calendar-plus"></i> Itinerary Planner</h1>
+    <div class="itinerary-form">
+      <div class="form-group">
+        <InputText placeholder="Itinerary Name" v-model="itineraryName" />
+        <p v-if="errors.name" class="error-message">{{ errors.name }}</p>
+      </div>
+      <div class="form-group">
+        <Calendar placeholder="Select Date" v-model="itineraryDate" 
+                  showTime hourFormat="24" :minDate="new Date()" 
+                  dateFormat="yy-mm-dd" />
+        <p v-if="errors.date" class="error-message">{{ errors.date }}</p>
+      </div>
+      <div class="form-group">
+        <LandmarkQuickSelect v-if="selectedCity" :city="selectedCity" 
+                             v-model="startingPoint" />
+      </div>
+      <div class="form-actions">
+        <Button label="Create Itinerary" class="btn" icon="pi pi-check" 
+                @click="createItinerary" :disabled="isLoading" />
+        <Button label="Edit Itinerary" class="btn" icon="pi pi-pencil" 
+                @click="editItinerary" :disabled="isLoading" />
+        <Button label="Delete Itinerary" class="btn" icon="pi pi-trash" 
+                @click="deleteItinerary" :disabled="isLoading" />
+      </div>
     </div>
-    <div class="modify-itinerary-container">
-      <InputText placeholder="Landmark Name" />
-      <Button
-        label="Add To Itinerary"
-        class="add-to-itinerary-btn"
-        @click="addToItinerary"
-      />
-
-      <Button
-        label="Edit Itinerary"
-        class="edit-itinerary-btn"
-        @click="editItinerary"
-      />
-      <Button
-        label="Remove From Itinerary"
-        class="remove-itinerary-btn"
-        @click="removeFromItinerary"
-      />
+    <div v-if="message.text" class="message" 
+         :class="{'message-success': message.type === 'success', 
+                  'message-error': message.type === 'error'}">
+      {{ message.text }}
     </div>
-
-    <Accordion>
-      <AccordionTab
-        v-for="landmark in landmarks"
-        :key="landmark.id"
-        class="landmark-tab"
-      >
-        <template #header>
-          <div class="accordion-header">
-            <span>{{ landmark.displayName?.text }}</span>
-            <Checkbox :value="landmark.id" v-model="selectedLandmarks" />
-          </div>
-        </template>
-
-        <div class="landmark-details">
-          <div class="landmark-info">
-            <h2>{{ landmark.displayName?.text }}</h2>
-            <p v-if="landmark.formattedAddress">
-              <strong>Address:</strong> {{ landmark.formattedAddress }}
-            </p>
-            <p v-if="landmark.types">
-              <strong>Types:</strong> {{ landmark.types.join(", ") }}
-            </p>
-            <p v-if="landmark.accessibilityOptions">
-              <strong>Accessibility Options:</strong>
-              {{ formatAccessibilityOptions(landmark.accessibilityOptions) }}
-            </p>
-          </div>
-
-          <div class="landmark-media">
-            <!-- ImageMapSwap component will handle toggling between image and map -->
-            <ImageMapSwap
-              v-if="
-                landmark.photos.length > 0 ||
-                (landmark.location &&
-                  landmark.location.latitude &&
-                  landmark.location.longitude)
-              "
-              :photos="landmark.photos"
-              :displayName="landmark.displayName?.text"
-              :city="selectedCity.value"
-            />
-
-            <div
-              v-if="
-                landmark.currentOpeningHours &&
-                landmark.currentOpeningHours.weekdayDescriptions
-              "
-              class="hours-table"
-            >
-              <h3>Opening Hours</h3>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Day</th>
-                    <th>Hours</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(hours, index) in landmark.currentOpeningHours
-                      .weekdayDescriptions"
-                    :key="index"
-                  >
-                    <td>{{ getDayFromHoursString(hours) }}</td>
-                    <td>{{ getHoursFromHoursString(hours) }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+    <div class="landmarks-section">
+      <h2><i class="pi pi-fw pi-map-marker"></i> Landmarks</h2>
+      <div class="landmarks-list">
+        <div v-for="landmark in landmarks" :key="landmark.id" class="landmark-item">
+          <Checkbox :value="landmark.id" v-model="selectedLandmarks" />
+          <span class="landmark-name" @click="getLandmarkDetails(landmark.id)">
+            {{ landmark.name }}
+          </span>
         </div>
-      </AccordionTab>
-    </Accordion>
+      </div>
+      <Button label="Add Selected Landmarks" class="btn" icon="pi pi-plus" 
+              @click="addLandmarksToItinerary" :disabled="isLoading" />
+    </div>
   </div>
 </template>
 
+  
+  
 <script>
+import { ref, reactive } from "vue";
+import InputText from "primevue/inputtext";
+import Calendar from "primevue/calendar";
 import Checkbox from "primevue/checkbox";
-import { ref, onMounted, watch } from "vue";
-import Accordion from "primevue/accordion";
-import AccordionTab from "primevue/accordiontab";
+import Button from "primevue/button";
 import ItineraryService from "../services/ItineraryService";
-import Button from "primevue/button"; // Import Button component
-import ImageMapSwap from "../components/ImageMapSwap.vue";
-import EventHeader from "../components/EventHeader.vue";
+import LandmarkQuickSelect from "../components/LandmarkQuickSelect.vue";
+import LandmarkService from "../services/LandmarkService";
 
 export default {
   components: {
-    ImageMapSwap,
-    Accordion,
-    AccordionTab,
+    InputText,
+    Calendar,
     Checkbox,
     Button,
-    EventHeader, // Register Button component
+    LandmarkQuickSelect,
   },
   setup() {
-    const selectedCity = ref();
+    const itineraryName = ref("");
+    const itineraryDate = ref(null);
+    const selectedCity = ref(null);
+    const startingPoint = ref(null);
     const landmarks = ref([]);
     const selectedLandmarks = ref([]);
+    const createdItineraryId = ref(null);
+    const isLoading = ref(false);
+    const message = reactive({ text: "", type: "" });
+    const errors = reactive({ name: "", date: "" });
 
-    const removeFromItinerary = async () => {
+    async function getLandmarkDetails(placeId) {
       try {
-        for (let id of selectedLandmarks.value) {
-          await fetch(`/itinerary/delete?itinerary_id=${id}`, {
-            method: "POST",
-          });
-        }
+        const response = await LandmarkService.fetchLandmarkDetails(placeId);
       } catch (error) {
-        console.error("Error removing from itinerary:", error);
+        console.error("Error fetching landmark details:", error);
       }
+    }
+
+    const validateForm = () => {
+      errors.name = itineraryName.value ? "" : "Itinerary name is required.";
+      errors.date = itineraryDate.value ? "" : "Itinerary date is required.";
+      return !errors.name && !errors.date;
+    };
+
+    const formatDate = (date) => {
+      if (!date) return null;
+      return date.toISOString().split("T")[0];
     };
 
     const fetchLandmarks = async () => {
       try {
-        const cityName = selectedCity.value?.value;
-        if (cityName) {
-          const response = await ItineraryService.returnAllItinerary();
-          if (response.status === 200) {
-            landmarks.value = response.data.places;
-          }
-        } else {
-          console.error("Error fetching landmarks by Itinerary ID");
-        }
+        const response = await ItineraryService.returnAllItinerary();
+        landmarks.value = response.data;
       } catch (error) {
         console.error("Error fetching landmarks:", error);
       }
     };
 
-    watch(selectedCity, (newValue, oldValue) => {
-      if (newValue !== oldValue) {
-        fetchLandmarks();
+    fetchLandmarks();
+
+    const createItinerary = async () => {
+      if (!validateForm()) return;
+      isLoading.value = true;
+      try {
+        const newItinerary = {
+          name: itineraryName.value,
+          startingPoint: startingPoint.value,
+          eventDate: formatDate(itineraryDate.value),
+          landmarks: selectedLandmarks.value.map((landmark) => landmark.id),
+        };
+        const response = await ItineraryService.createItinerary(newItinerary);
+        createdItineraryId.value = response.data;
+        message.text = "Itinerary created successfully.";
+        message.type = "success";
+      } catch (error) {
+        message.text = "Error creating itinerary: " + error.message;
+        message.type = "error";
+      } finally {
+        isLoading.value = false;
       }
-    });
-
-    const getDayFromHoursString = (hoursString) => {
-      return hoursString.split(":")[0];
     };
 
-    const getHoursFromHoursString = (hoursString) => {
-      return hoursString.split(":").slice(1).join(":").trim();
-    };
-
-    const formatAccessibilityOptions = (options) => {
-      if (!options) {
-        return "Not available";
+    const editItinerary = async () => {
+      isLoading.value = true;
+      try {
+        // Assume we have the edited itinerary data
+        const editedItinerary = { /* ... */ };
+        await ItineraryService.updateItinerary(editedItinerary);
+        message.text = "Itinerary updated successfully.";
+        message.type = "success";
+      } catch (error) {
+        message.text = "Error updating itinerary: " + error.message;
+        message.type = "error";
+      } finally {
+        isLoading.value = false;
       }
-      return Object.entries(options)
-        .filter(([_, value]) => value)
-        .map(([key, _]) => humanizeString(key))
-        .join(", ");
     };
 
-    const humanizeString = (str) => {
-      return str.replace(/([A-Z])/g, " $1").trim();
+    const deleteItinerary = async () => {
+      if (confirm("Are you sure you want to delete this itinerary?")) {
+        isLoading.value = true;
+        try {
+          await ItineraryService.deleteItinerary(createdItineraryId.value);
+          message.text = "Itinerary deleted successfully.";
+          message.type = "success";
+        } catch (error) {
+          message.text = "Error deleting itinerary: " + error.message;
+          message.type = "error";
+        } finally {
+          isLoading.value = false;
+        }
+      }
     };
 
-    onMounted(fetchLandmarks);
+    const addLandmarksToItinerary = async () => {
+      if (!createdItineraryId.value) return;
+      isLoading.value = true;
+      try {
+        for (const landmarkId of selectedLandmarks.value) {
+          await ItineraryService.addLandmarkToItinerary(
+            createdItineraryId.value,
+            landmarkId
+          );
+        }
+        message.text = "Landmarks added to itinerary successfully.";
+        message.type = "success";
+      } catch (error) {
+        message.text = "Error adding landmarks to itinerary: " + error.message;
+        message.type = "error";
+      } finally {
+        isLoading.value = false;
+      }
+    };
 
     return {
-      landmarks,
+      itineraryName,
+      itineraryDate,
       selectedCity,
+      startingPoint,
+      landmarks,
       selectedLandmarks,
-      getDayFromHoursString,
-      getHoursFromHoursString,
-      formatAccessibilityOptions,
+      createdItineraryId,
+      createItinerary,
+      editItinerary,
+      deleteItinerary,
+      addLandmarksToItinerary,
+      isLoading,
+      message,
+      errors,
     };
   },
 };
 </script>
 
-<style scoped>
-.itinerary-container {
-  padding: 1rem;
-  max-width: 1200px;
-  margin: auto;
+
+  
+  
+  
+
+  <style scoped>
+.itinerary-container h1 i,
+.landmarks-section h2 i {
+  margin-right: 0.5rem;
+}
+.error-message {
+  color: red;
+  font-size: 0.8em;
 }
 
-h1 {
+.message {
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
   text-align: center;
-  margin-bottom: 2rem;
 }
 
-.modify-itinerary-container {
-  display: block;
-  margin: 1rem auto;
-  color: #ffffff;
-  background-color: #333333; /* PrimeVue Soho Dark theme success color */
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  width: 52rem;
+.message-success {
+  background-color: #d4edda;
+  color: #155724;
 }
 
-Button {
-  margin-right: 1rem;
-  margin-left: 1rem;
+.message-error {
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
-#calendar-container {
-  display: block;
-  margin: 1rem auto;
-  color: #ffffff;
-  background-color: #333333; /* PrimeVue Soho Dark theme success color */
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  left: 50%;
-  right: 50%;
-  width: 26.5rem;
-}
-#calendar Button {
-  margin-right: 0px;
+.form-group {
+  margin-bottom: 15px;
 }
 
-.accordion-header {
+.form-actions {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 1.1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
 }
 
-.landmark-tab {
-  margin-bottom: 1rem;
-  border: 1px solid #444; /* Slightly lighter border for contrast */
-  background-color: #262626; /* Dark background for tab content */
-  border-radius: 8px;
-}
-
-.landmark-details {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 20px;
-  padding: 1rem;
-}
-
-.landmark-info,
-.map-container,
-.image-container,
-.hours-table {
-  background-color: #333333; /* Dark backgrounds for content */
-  margin-top: 8px;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
-}
-
-.image-container img {
-  width: 100%;
-  height: auto;
-  border-radius: 5px;
-}
-
-.hours-table table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.hours-table th,
-.hours-table td {
-  border: 1px solid #555; /* Border color for table */
-  padding: 8px;
-  text-align: left;
-}
-
-@media (max-width: 768px) {
-  .landmark-details {
-    grid-template-columns: 1fr;
-  }
-
-  .accordion-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* Additional styles for checkbox alignment */
-.checkbox-container {
+.landmark-item {
   display: flex;
   align-items: center;
-  column-gap: 0.5rem; /* No affect, fix */
+  margin-bottom: 10px;
+}
+
+.landmark-name {
+  margin-left: 10px;
+  cursor: pointer;
 }
 </style>

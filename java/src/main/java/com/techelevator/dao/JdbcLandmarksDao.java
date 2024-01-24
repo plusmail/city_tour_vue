@@ -58,31 +58,6 @@ public class JdbcLandmarksDao implements LandmarksDao {
         return landmarks;
     }
 
-//    @Override
-//    public Landmarks findByPlaceId(String placeId) {
-//        return null;
-//    }
-
-//    @Override
-//    public List<Landmarks> list() {
-//        List<Landmarks> landmarks = new ArrayList<>();
-//        String sql = "SELECT * FROM landmarks;";
-//
-//        try {
-//            //SqlRowSet results = jdbcTemplate.queryForRowSet(sql, )
-//        } catch (Exception e) {
-//            System.out.println("Something went wrong: get landmark");
-//        }
-//
-//        return landmarks;
-//    }
-
-
-//    @Override
-//    public Landmarks update(Landmarks landmark, String placeId) {
-//        return null;
-//    }
-
     private Landmark mapRowToLandmark(SqlRowSet result) {
         Landmark landmark = new Landmark();
         landmark.setPlaceId(result.getString("place_id"));

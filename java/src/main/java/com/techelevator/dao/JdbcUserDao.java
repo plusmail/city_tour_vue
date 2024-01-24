@@ -89,18 +89,23 @@ public class JdbcUserDao implements UserDao {
     }
 
     public int addItinerary(int userId, int itineraryId) {
-        String sql = "insert into users_itinerary (user_id, itinerary_id)\n" +
-                "values (?, ?) returning user_id;";
+        String sql = "INSERT INTO users_itinerary (user_id, itinerary_id) VALUES (?, ?) RETURNING user_id;";
 
         try {
-            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userId, itineraryId);
-            if (result.next()) {
-                return result.getInt("user_id");
+            // Using queryForObject for better handling of expected single result
+            Integer resultUserId = jdbcTemplate.queryForObject(sql, new Object[] {userId, itineraryId}, Integer.class);
+
+            if (resultUserId != null) {
+                return resultUserId;
             } else {
                 throw new DaoException("Itinerary not added to user");
             }
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Itinerary not added due to data integrity violation: " + e.getMessage(), e);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
         } catch (Exception e) {
-            throw new DaoException("Itinerary not added to user");
+            throw new DaoException("Itinerary not added to user: " + e.getMessage(), e);
         }
     }
 
