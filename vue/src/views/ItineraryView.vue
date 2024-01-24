@@ -33,11 +33,11 @@
     <div class="landmarks-section">
       <h2><i class="pi pi-fw pi-map-marker"></i> Landmarks</h2>
       <div class="landmarks-list">
-        <div v-for="landmark in landmarks" :key="landmark.id" class="landmark-item">
-          <Checkbox :value="landmark.id" v-model="selectedLandmarks" />
-          <span class="landmark-name" @click="getLandmarkDetails(landmark.id)">
-            {{ landmark.name }}
-          </span>
+        <div class="landmark-item">
+          <Dropdown class="landmark-name" :options="landmarks" optionLabel="placeId" v-model="selectedPlaceId" 
+              placeholder="Select a Landmark"></Dropdown>
+          <Dropdown class="itinerary-name" :options="itineraries" optionLabel="name" v-model="selectedItineraryId" 
+              placeholder="Select an Itinerary"></Dropdown>
         </div>
       </div>
       <Button label="Add Selected Landmarks" class="btn" icon="pi pi-plus" 
@@ -52,19 +52,20 @@
 import { ref, reactive } from "vue";
 import InputText from "primevue/inputtext";
 import Calendar from "primevue/calendar";
-import Checkbox from "primevue/checkbox";
 import Button from "primevue/button";
+import Dropdown from "primevue/dropdown";
 import ItineraryService from "../services/ItineraryService";
 import LandmarkQuickSelect from "../components/LandmarkQuickSelect.vue";
 import LandmarkService from "../services/LandmarkService";
+
 
 export default {
   components: {
     InputText,
     Calendar,
-    Checkbox,
     Button,
     LandmarkQuickSelect,
+    Dropdown
   },
   setup() {
     const itineraryName = ref("");
@@ -77,6 +78,9 @@ export default {
     const isLoading = ref(false);
     const message = reactive({ text: "", type: "" });
     const errors = reactive({ name: "", date: "" });
+    const itineraries = ref([]);
+    const selectedItineraryId = ref(null);
+    const selectedPlaceId = ref(null);
 
     async function getLandmarkDetails(placeId) {
       try {
@@ -107,6 +111,17 @@ export default {
     };
 
     fetchLandmarks();
+
+    const fetchItineraries = async () => {
+      try {
+        const response = await ItineraryService.returnAllItinerary();
+        itineraries.value = response.data;
+      } catch (error) {
+        console.error("Error fetching itineraries:", error);
+      }
+    };
+
+    fetchItineraries();
 
     const createItinerary = async () => {
       if (!validateForm()) return;
@@ -197,6 +212,9 @@ export default {
       isLoading,
       message,
       errors,
+      itineraries,
+      selectedItineraryId,
+      selectedPlaceId
     };
   },
 };
