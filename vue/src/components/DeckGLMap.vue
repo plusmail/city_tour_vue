@@ -35,7 +35,7 @@ export default {
         canvas: this.$refs.mapContainer,
         initialViewState: {
           longitude: -122.41669,
-          latitude: 37.7853, //we will need to replace this with data from the Places API
+          latitude: 37.7853, 
           zoom: 5,
         },
         controller: true,

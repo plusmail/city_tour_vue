@@ -69,13 +69,11 @@
       const isLoading = ref(false);
       const message = reactive({ text: "", type: "" });
       const errors = reactive({ name: "", date: "" });
-  
       const validateForm = () => {
         errors.name = itineraryName.value ? "" : "Itinerary name is required.";
         errors.date = itineraryDate.value ? "" : "Itinerary date is required.";
         return !errors.name && !errors.date;
       };
-  
       const createItinerary = async () => {
   if (!validateForm()) return;
   isLoading.value = true;
@@ -85,35 +83,26 @@
       eventDate: itineraryDate.value,
       startingPoint: startingPoint.value,
     };
-
     const response = await ItineraryService.createItinerary(newItinerary);
-
     if (response && response.data) {
       const createdItineraryId = response.data;
       console.log(`Itinerary created successfully with ID: ${createdItineraryId}`);
     }
-
     message.text = "Itinerary created successfully.";
     message.type = "success";
-
     resetForm();
   } catch (error) {
     console.error("Error creating itinerary:", error);
     message.text = "Error creating itinerary. ";
-    
-    // Provide additional details based on the error object
     if (error.response) {
-      // The request was made and the server responded with a status code that falls out of the range of 2xx
       console.error("Error data:", error.response.data);
       console.error("Error status:", error.response.status);
       console.error("Error headers:", error.response.headers);
       message.text += `The server responded with a status code of ${error.response.status}.`;
     } else if (error.request) {
-      // The request was made but no response was received
       console.error("No response received:", error.request);
       message.text += "No response was received from the server.";
     } else {
-      // Something happened in setting up the request that triggered an Error
       console.error("Error message:", error.message);
       message.text += error.message;
     }
@@ -150,19 +139,16 @@ const resetForm = () => {
     color: red;
     font-size: 0.8em;
   }
-  
   .message {
     padding: 10px;
     margin-top: 10px;
     border-radius: 5px;
     text-align: center;
   }
-  
   .message-success {
     background-color: #d4edda;
     color: #155724;
   }
-  
   .message-error {
     background-color: #f8d7da;
     color: #721c24;
