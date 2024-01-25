@@ -117,28 +117,31 @@ public class JdbcItineraryDao implements ItineraryDao {
         try {
             jdbcTemplate.update(sql, itineraryId, itineraryId);
         } catch (Exception e) {
-            String message = String.format("Itinerary not delete: itinerary_id(%s)", itineraryId);
+            String message = String.format("Itinerary not deleted: itinerary_id(%s)", itineraryId);
             throw new DaoException(message);
         }
     }
 
     @Override
     public int addLandmarkToItinerary(int itineraryId, String placeId) {
-        String checkLandmarkSql = "SELECT EXISTS (SELECT 1 FROM landmarks WHERE place_id = ?)";
-        String insertLandmarkSql = "INSERT INTO landmarks (place_id) VALUES (?) ON CONFLICT (place_id) DO NOTHING";
-        String insertItineraryLandmarkSql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id) VALUES (?, ?) returning itinerary_id;";
+//        String checkLandmarkSql = "SELECT EXISTS (SELECT 1 FROM landmarks WHERE place_id = ?)";
+//        String insertLandmarkSql = "INSERT INTO landmarks (place_id) VALUES (?) ON CONFLICT (place_id) DO NOTHING";
+//        String insertLandmarkSql = "INSERT INTO landmarks (place_id) VALUES (?)";
+//        String insertItineraryLandmarkSql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id) VALUES (?, ?) returning itinerary_id;";
+        String sql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id) VALUES (?, ?) returning itinerary_id;";
 
         try {
             // Check if the place ID exists in landmarks
-            boolean landmarkExists = jdbcTemplate.queryForObject(checkLandmarkSql, new Object[]{placeId}, Boolean.class);
+//            boolean landmarkExists = jdbcTemplate.queryForObject(checkLandmarkSql, new Object[]{placeId}, Boolean.class);
 
-            if (!landmarkExists) {
-                // Insert the place ID into landmarks if it doesn't exist
-                jdbcTemplate.update(insertLandmarkSql, placeId);
-            }
+//            if (!landmarkExists) {
+            // Insert the place ID into landmarks if it doesn't exist
+//            jdbcTemplate.update(insertLandmarkSql, placeId);
+//            }
 
-            System.out.println("Inserting place ID: " + placeId + " into itinerary ID: " + itineraryId); // Log the action
-            SqlRowSet result = jdbcTemplate.queryForRowSet(insertItineraryLandmarkSql, itineraryId, placeId);
+//            System.out.println("Inserting place ID: " + placeId + " into itinerary ID: " + itineraryId); // Log the action
+//            SqlRowSet result = jdbcTemplate.queryForRowSet(insertItineraryLandmarkSql, itineraryId, placeId);
+            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itineraryId, placeId);
 
             if (result.next()) {
                 return result.getInt("itinerary_id");
@@ -149,8 +152,6 @@ public class JdbcItineraryDao implements ItineraryDao {
             throw new DaoException("Landmark not added to itinerary: " + e.getMessage());
         }
     }
-
-
 
 
     @Override
@@ -164,6 +165,7 @@ public class JdbcItineraryDao implements ItineraryDao {
             throw new DaoException(message);
         }
     }
+
     @Override
     public void removeLandmarkFromAllItinerary(String placeId) {
         String sql = "delete from itinerary_landmarks where place_id = ?;";

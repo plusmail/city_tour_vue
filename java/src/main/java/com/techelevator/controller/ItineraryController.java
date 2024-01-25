@@ -1,6 +1,7 @@
 package com.techelevator.controller;
 
 import com.techelevator.dao.ItineraryDao;
+import com.techelevator.dao.LandmarksDao;
 import com.techelevator.dao.UserDao;
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.Itinerary;
@@ -16,6 +17,9 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping(path = "/itinerary")
 public class ItineraryController implements BaseController {
+
+    @Autowired
+    private LandmarksDao landmarksDao;
     @Autowired
     private ItineraryDao itineraryDao;
     @Autowired
@@ -77,7 +81,6 @@ public class ItineraryController implements BaseController {
         }
     }
 
-
     /*
      * localhost:9000/itinerary/delete?itinerary_id=2003
      * */
@@ -95,6 +98,7 @@ public class ItineraryController implements BaseController {
     @RequestMapping(path = "/add_landmark", method = RequestMethod.POST)
     public int addLandmarkToItinerary(@RequestParam(value = "itinerary_id") int itineraryId,
                            @RequestParam(value = "place_id") String placeId) {
+        landmarksDao.create(placeId);
         return itineraryDao.addLandmarkToItinerary(itineraryId, placeId);
     }
     /*
