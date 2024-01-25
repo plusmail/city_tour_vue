@@ -37,8 +37,12 @@
           touchUI
         />
       </div>
-
+      
+      <div class="form-group">
+        <LandmarkQuickSelect/>
+      </div>
       <div class="form-actions">
+        
         <Button
           label="Save Changes"
           class="btn primary-btn"
@@ -70,8 +74,6 @@ import InputText from "primevue/inputtext";
 import Calendar from "primevue/calendar";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
-import MultiSelect from "primevue/multiselect";
-import TreeSelect from "primevue/treeselect";
 import Accordion from "primevue/accordion";
 import AccordionTab from "primevue/accordiontab";
 import ItineraryService from "../services/ItineraryService";
@@ -83,8 +85,6 @@ export default {
     Calendar,
     Button,
     Dropdown,
-    MultiSelect,
-    TreeSelect,
     Accordion,
     AccordionTab,
     LandmarkQuickSelect
@@ -192,7 +192,8 @@ export default {
       itineraryNewName,
       saveItinerary,
       cancelEdit,
-      deleteItinerary
+      deleteItinerary,
+      LandmarkQuickSelect
     };
   },
 };

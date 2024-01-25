@@ -1,6 +1,7 @@
 <template>
   <div class="landmarks-container">
-    <h1>Explore Landmarks</h1>
+    <h1>Sphinx Tours</h1>
+    <h2>Explore Landmarks</h2>
     <SearchHeader v-model="selectedCity" />
     <div id="itinerary-select-area">
       <Dropdown

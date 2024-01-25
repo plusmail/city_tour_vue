@@ -1,4 +1,5 @@
 <template>
+  <ToastService/>
   <Toast ref="toast" />
   <div v-if="message.text" class="message" 
          :class="{'message-success': message.type === 'success', 
@@ -14,12 +15,7 @@
   
 <script>
 import { ref, reactive } from "vue";
-import InputText from "primevue/inputtext";
-import Calendar from "primevue/calendar";
-import Button from "primevue/button";
-import Dropdown from "primevue/dropdown";
 import ItineraryService from "../services/ItineraryService";
-import LandmarkQuickSelect from "../components/LandmarkQuickSelect.vue";
 import LandmarkService from "../services/LandmarkService";
 import EditItinerary from '../components/EditItinerary.vue';
 import CreateItinerary from '../components/CreateItinerary.vue';
@@ -30,16 +26,11 @@ import Toast from 'primevue/toast';
 
 export default {
   components: {
-    InputText,
-    Calendar,
-    Button,
-    LandmarkQuickSelect,
-    Dropdown,
     EditItinerary,
     CreateItinerary,
     ItineraryLandmarks,
     ToastService,
-    Toast,
+    Toast
   },
   setup() {
     const itineraryName = ref("");
@@ -120,6 +111,7 @@ export default {
     const createItinerary = async (itineraryData) => {
   if (!validateForm()) return;
   isLoading.value = true;
+  console.log(itineraryData);
   try {
     const response = await ItineraryService.createItinerary(itineraryData);
     createdItineraryId.value = response.data;
@@ -143,12 +135,13 @@ const editItinerary = async (itinerary) => {
 
 // let key = "startDate"
 // data[key] = "2024-01-01"
+  console.log(itinerary)
 
   try {
-    const editedItinerary = {
-      ...itinerary,
-      eventDate: formatDate(itineraryDate.value)
-    };
+    // const editedItinerary = {
+    //   ...itinerary,
+    //   eventDate: formatDate(itineraryDate.value)
+    // };
 
     // await ItineraryService.updateItinerary(itinerary.itineraryId, editedItinerary);
     await ItineraryService.updateItinerary(itinerary);
