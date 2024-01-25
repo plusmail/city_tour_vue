@@ -32,7 +32,7 @@ public class JdbcItineraryDao implements ItineraryDao {
 
             if (result.next()) {
                 int itineraryId = result.getInt("itinerary_id");
-                itinerary.setItineraryId(itineraryId); // Set the itinerary_id back into the Itinerary object
+                itinerary.setItineraryId(itineraryId);
                 return itineraryId;
             } else {
                 throw new DaoException("Itinerary not created");
@@ -175,27 +175,6 @@ public class JdbcItineraryDao implements ItineraryDao {
             throw new DaoException(message);
         }
     }
-
-//    public static class LandmarkRequest {
-//        private int itineraryId;
-//        private String placeId;
-//
-//        public int getItineraryId() {
-//            return itineraryId;
-//        }
-//
-//        public void setItineraryId(int itineraryId) {
-//            this.itineraryId = itineraryId;
-//        }
-//
-//        public String getPlaceId() {
-//            return placeId;
-//        }
-//
-//        public void setPlaceId(String placeId) {
-//            this.placeId = placeId;
-//        }
-//    }
 
     private Itinerary mapRowToItinerary(SqlRowSet result) {
         Itinerary itinerary = new Itinerary();
