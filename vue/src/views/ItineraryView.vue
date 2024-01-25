@@ -136,12 +136,23 @@ export default {
 const editItinerary = async (itinerary) => {
   if (!validateForm()) return;
   isLoading.value = true;
+
+// let data = {
+//     startDate: "2024-01-01"
+// };
+
+// let key = "startDate"
+// data[key] = "2024-01-01"
+
   try {
     const editedItinerary = {
       ...itinerary,
       eventDate: formatDate(itineraryDate.value)
     };
-    await ItineraryService.updateItinerary(itinerary.itineraryId, editedItinerary);
+
+    // await ItineraryService.updateItinerary(itinerary.itineraryId, editedItinerary);
+    await ItineraryService.updateItinerary(itinerary);
+
     toast.value.add({ severity: 'success', summary: 'Success', detail: 'Itinerary updated successfully.', life: 3000 });
   } catch (error) {
     console.error("An error occurred while updating the itinerary:", error);
@@ -203,6 +214,7 @@ const deleteItinerary = async (itineraryId) => {
     const addLandmarksToItinerary = async () => {
       if (!createdItineraryId.value) return;
       isLoading.value = true;
+      
       try {
         for (const landmark of selectedLandmarks.value) {
           await ItineraryService.addLandmarkToItinerary(
