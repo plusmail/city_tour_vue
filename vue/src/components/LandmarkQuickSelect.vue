@@ -26,11 +26,12 @@ export default {
   },
   props: {
     city: String,
+    initialValue: Object,
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "error"],
   setup(props, { emit }) {
     const landmarks = ref([]);
-    const selectedLandmark = ref(null);
+    const selectedLandmark = ref(props.initialValue || null);
     const filterPlaceholder = "Type to search...";
 
     // Initial fetch if city is already set
@@ -39,16 +40,13 @@ export default {
     }
 
     // Fetch landmarks whenever the city prop changes
-    watch(
-      () => props.city,
-      (newCity) => {
-        if (newCity) {
-          fetchLandmarks(newCity);
-        } else {
-          landmarks.value = []; // Reset landmarks when there is no city
-        }
+    watch(() => props.city, (newCity) => {
+      if (newCity) {
+        fetchLandmarks(newCity);
+      } else {
+        landmarks.value = []; // Reset landmarks when there is no city
       }
-    );
+    });
 
     const fetchLandmarks = async (cityName) => {
       try {
@@ -59,16 +57,14 @@ export default {
         }));
       } catch (error) {
         console.error("Error fetching landmarks:", error);
+        emit("error", "Unable to fetch landmarks");
       }
     };
 
     // Emit the selected landmark's value when it changes
-    watch(
-      () => selectedLandmark.value,
-      (newValue) => {
-        emit("update:modelValue", newValue ? newValue.value : null);
-      }
-    );
+    watch(() => selectedLandmark.value, (newValue) => {
+      emit("update:modelValue", newValue ? newValue.value : null);
+    });
 
     return {
       landmarks,

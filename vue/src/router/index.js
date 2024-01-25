@@ -2,7 +2,6 @@ import { createRouter as createRouter, createWebHistory } from 'vue-router'
 import { useStore } from 'vuex'
 
 // Import components
-import HomeView from '../views/HomeView.vue';
 import LoginView from '../views/LoginView.vue';
 import LogoutView from '../views/LogoutView.vue';
 import RegisterView from '../views/RegisterView.vue';
@@ -19,25 +18,9 @@ import ItineraryView from '../views/ItineraryView.vue';
  */
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView,
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
     path: "/login",
     name: "login",
     component: LoginView,
-    meta: {
-      requiresAuth: false
-    }
-  },
-  {
-    path: "/logout",
-    name: "logout",
-    component: LogoutView,
     meta: {
       requiresAuth: false
     }
@@ -64,6 +47,14 @@ const routes = [
     component: ItineraryView,
     meta: {
       requiresAuth: true
+    }
+  },
+  {
+    path: "/logout",
+    name: "logout",
+    component: LogoutView,
+    meta: {
+      requiresAuth: false
     }
   }
 ];

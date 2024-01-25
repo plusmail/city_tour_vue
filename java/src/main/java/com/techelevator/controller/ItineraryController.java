@@ -3,8 +3,10 @@ package com.techelevator.controller;
 import com.techelevator.dao.ItineraryDao;
 import com.techelevator.dao.JdbcItineraryDao;
 import com.techelevator.dao.UserDao;
+import com.techelevator.exception.DaoException;
 import com.techelevator.model.Itinerary;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -64,10 +66,18 @@ public class ItineraryController implements BaseController {
      * localhost:9000/itinerary/update
      * */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(path = "/update", method = RequestMethod.POST)
-    public Itinerary update(@RequestBody Itinerary itinerary) {
-        return itineraryDao.update(itinerary);
+    @RequestMapping(path = "/update", method = RequestMethod.PUT)  // Change to PUT
+    public ResponseEntity<?> update(@RequestBody Itinerary itinerary) {
+        try {
+            Itinerary updatedItinerary = itineraryDao.update(itinerary);
+            return ResponseEntity.ok(updatedItinerary);  // Return the updated itinerary
+        } catch (DaoException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());  // Return a descriptive error message
+        }
     }
+
 
     /*
      * localhost:9000/itinerary/delete?itinerary_id=2003

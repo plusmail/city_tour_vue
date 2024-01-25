@@ -1,49 +1,13 @@
 <template>
-  <div class="itinerary-container">
-    <h1><i class="pi pi-fw pi-calendar-plus"></i> Itinerary Planner</h1>
-    <div class="itinerary-form">
-      <div class="form-group">
-        <InputText placeholder="Itinerary Name" v-model="itineraryName" />
-        <p v-if="errors.name" class="error-message">{{ errors.name }}</p>
-      </div>
-      <div class="form-group">
-        <Calendar placeholder="Select Date" v-model="itineraryDate" 
-                  showTime hourFormat="24" :minDate="new Date()" 
-                  dateFormat="yy-mm-dd" />
-        <p v-if="errors.date" class="error-message">{{ errors.date }}</p>
-      </div>
-      <div class="form-group">
-        <LandmarkQuickSelect v-if="selectedCity" :city="selectedCity" 
-                             v-model="startingPoint" />
-      </div>
-      <div class="form-actions">
-        <Button label="Create Itinerary" class="btn" icon="pi pi-check" 
-                @click="createItinerary" :disabled="isLoading" />
-        <Button label="Edit Itinerary" class="btn" icon="pi pi-pencil" 
-                @click="editItinerary" :disabled="isLoading" />
-        <Button label="Delete Itinerary" class="btn" icon="pi pi-trash" 
-                @click="deleteItinerary" :disabled="isLoading" />
-      </div>
-    </div>
-    <div v-if="message.text" class="message" 
+  <Toast ref="toast" />
+  <div v-if="message.text" class="message" 
          :class="{'message-success': message.type === 'success', 
                   'message-error': message.type === 'error'}">
       {{ message.text }}
     </div>
-    <div class="landmarks-section">
-      <h2><i class="pi pi-fw pi-map-marker"></i> Landmarks</h2>
-      <div class="landmarks-list">
-        <div class="landmark-item">
-          <Dropdown class="landmark-name" :options="landmarks" optionLabel="placeId" v-model="dropdownLandmarks" 
-              placeholder="Select a Landmark"></Dropdown>
-          <Dropdown class="itinerary-name" :options="itineraries" optionLabel="name" v-model="selectedItinerary" 
-              placeholder="Select an Itinerary"></Dropdown>
-        </div>
-      </div>
-      <Button label="Add Selected Landmarks" class="btn" icon="pi pi-plus" 
-              @click="addLandmarksToItinerary" :disabled="isLoading" />
-    </div>
-  </div>
+                <CreateItinerary/>
+                <EditItinerary/>
+    <ItineraryLandmarks/>
 </template>
 
   
@@ -57,6 +21,11 @@ import Dropdown from "primevue/dropdown";
 import ItineraryService from "../services/ItineraryService";
 import LandmarkQuickSelect from "../components/LandmarkQuickSelect.vue";
 import LandmarkService from "../services/LandmarkService";
+import EditItinerary from '../components/EditItinerary.vue';
+import CreateItinerary from '../components/CreateItinerary.vue';
+import ItineraryLandmarks from '../components/ItineraryLandmarks.vue';
+import ToastService from 'primevue/toastservice';
+import Toast from 'primevue/toast';
 
 
 export default {
@@ -65,7 +34,12 @@ export default {
     Calendar,
     Button,
     LandmarkQuickSelect,
-    Dropdown
+    Dropdown,
+    EditItinerary,
+    CreateItinerary,
+    ItineraryLandmarks,
+    ToastService,
+    Toast,
   },
   setup() {
     const itineraryName = ref("");
@@ -82,6 +56,7 @@ export default {
     const selectedItinerary = ref();
     const selectedPlaceId = ref(null);
     const dropdownLandmarks = ref([]);
+    const toast = ref(null);
 
     async function getLandmarkDetails(placeId) {
       try {
@@ -142,69 +117,97 @@ export default {
 
     fetchItineraries();
 
-    const createItinerary = async () => {
-      if (!validateForm()) return;
-      isLoading.value = true;
-      try {
-        const newItinerary = {
-          name: itineraryName.value,
-          startingPoint: startingPoint.value,
-          eventDate: formatDate(itineraryDate.value),
-          landmarks: selectedLandmarks.value.map((landmark) => landmark.id),
-        };
-        const response = await ItineraryService.createItinerary(newItinerary);
-        createdItineraryId.value = response.data;
-        message.text = "Itinerary created successfully.";
-        message.type = "success";
-      } catch (error) {
-        message.text = "Error creating itinerary: " + error.message;
-        message.type = "error";
-      } finally {
-        isLoading.value = false;
-      }
-    };
+    const createItinerary = async (itineraryData) => {
+  if (!validateForm()) return;
+  isLoading.value = true;
+  try {
+    const response = await ItineraryService.createItinerary(itineraryData);
+    createdItineraryId.value = response.data;
+    this.$toast.add({severity:'success', summary: 'Success', detail: 'Itinerary created successfully.', life: 3000});
+    fetchItineraries();
+  } catch (error) {
+    this.$toast.add({severity:'error', summary: 'Error', detail: `Error creating itinerary: ${error.message}`, life: 5000});
+  } finally {
+    isLoading.value = false;
+  }
+};
 
-    const editItinerary = async () => {
-      isLoading.value = true;
-      try {
-        // Assume we have the edited itinerary data
-        const editedItinerary = { /* ... */ };
-        await ItineraryService.updateItinerary(editedItinerary);
-        message.text = "Itinerary updated successfully.";
-        message.type = "success";
-      } catch (error) {
-        message.text = "Error updating itinerary: " + error.message;
-        message.type = "error";
-      } finally {
-        isLoading.value = false;
-      }
-    };
 
-    const deleteItinerary = async () => {
-      if (confirm("Are you sure you want to delete this itinerary?")) {
-        isLoading.value = true;
-        try {
-          console.log(selectedItinerary.value);
-          await ItineraryService.deleteItinerary(selectedItinerary.value.itineraryId);
-          message.text = "Itinerary deleted successfully.";
-          message.type = "success";
-        } catch (error) {
-          message.text = "Error deleting itinerary: " + error.message;
-          message.type = "error";
-        } finally {
-          isLoading.value = false;
-        }
-      }
+const editItinerary = async (itinerary) => {
+  if (!validateForm()) return;
+  isLoading.value = true;
+  try {
+    const editedItinerary = {
+      ...itinerary,
+      eventDate: formatDate(itineraryDate.value)
     };
+    await ItineraryService.updateItinerary(itinerary.itineraryId, editedItinerary);
+    toast.value.add({ severity: 'success', summary: 'Success', detail: 'Itinerary updated successfully.', life: 3000 });
+  } catch (error) {
+    console.error("An error occurred while updating the itinerary:", error);
+    let detail = "Error updating itinerary. ";
+
+    if (error.response) {
+      console.error("Error data:", error.response.data);
+      console.error("Error status:", error.response.status);
+      console.error("Error headers:", error.response.headers);
+      detail += `The server responded with a status code of ${error.response.status}.`;
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+      detail += "No response was received from the server.";
+    } else {
+      console.error("Error message:", error.message);
+      detail += error.message;
+    }
+
+    toast.value.add({ severity: 'error', summary: 'Error', detail: detail, life: 5000 });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+
+
+const deleteItinerary = async (itineraryId) => {
+  if (confirm("Are you sure you want to delete this itinerary?")) {
+    isLoading.value = true;
+    try {
+      await ItineraryService.deleteItinerary(itineraryId);
+      toast.value.add({ severity: 'success', summary: 'Success', detail: 'Itinerary deleted successfully.', life: 3000 });
+    } catch (error) {
+      console.error("An error occurred while deleting the itinerary:", error);
+      let detail = "Error deleting itinerary. ";
+
+      if (error.response) {
+        console.error("Error data:", error.response.data);
+        console.error("Error status:", error.response.status);
+        console.error("Error headers:", error.response.headers);
+        detail += `The server responded with a status code of ${error.response.status}.`;
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+        detail += "No response was received from the server.";
+      } else {
+        console.error("Error message:", error.message);
+        detail += error.message;
+      }
+
+      toast.value.add({ severity: 'error', summary: 'Error', detail: detail, life: 5000 });
+    } finally {
+      isLoading.value = false;
+    }
+  }
+};
+
+
 
     const addLandmarksToItinerary = async () => {
       if (!createdItineraryId.value) return;
       isLoading.value = true;
       try {
-        for (const landmarkId of selectedLandmarks.value) {
+        for (const landmark of selectedLandmarks.value) {
           await ItineraryService.addLandmarkToItinerary(
             createdItineraryId.value,
-            landmarkId
+            landmark.id
           );
         }
         message.text = "Landmarks added to itinerary successfully.";
@@ -216,6 +219,7 @@ export default {
         isLoading.value = false;
       }
     };
+
 
     return {
       itineraryName,
@@ -235,7 +239,9 @@ export default {
       itineraries,
       selectedItinerary,
       selectedPlaceId,
-      dropdownLandmarks
+      dropdownLandmarks,
+      Toast,
+      toast
     };
   },
 };
@@ -264,12 +270,10 @@ export default {
 }
 
 .message-success {
-  background-color: #d4edda;
   color: #155724;
 }
 
 .message-error {
-  background-color: #f8d7da;
   color: #721c24;
 }
 

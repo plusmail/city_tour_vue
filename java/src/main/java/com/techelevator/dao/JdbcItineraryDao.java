@@ -124,10 +124,22 @@ public class JdbcItineraryDao implements ItineraryDao {
 
     @Override
     public int addLandmarkToItinerary(int itineraryId, String placeId) {
-        String sql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id) VALUES (?, ?) returning itinerary_id;";
+        String checkLandmarkSql = "SELECT EXISTS (SELECT 1 FROM landmarks WHERE place_id = ?)";
+        String insertLandmarkSql = "INSERT INTO landmarks (place_id) VALUES (?) ON CONFLICT (place_id) DO NOTHING";
+        String insertItineraryLandmarkSql = "INSERT INTO itinerary_landmarks (itinerary_id, place_id) VALUES (?, ?) returning itinerary_id;";
+
         try {
-            System.out.println("Inserting place ID: " + placeId + " into itinerary ID: " + itineraryId); // Log the place ID and itinerary ID
-            SqlRowSet result = jdbcTemplate.queryForRowSet(sql, itineraryId, placeId);
+            // Check if the place ID exists in landmarks
+            boolean landmarkExists = jdbcTemplate.queryForObject(checkLandmarkSql, new Object[]{placeId}, Boolean.class);
+
+            if (!landmarkExists) {
+                // Insert the place ID into landmarks if it doesn't exist
+                jdbcTemplate.update(insertLandmarkSql, placeId);
+            }
+
+            System.out.println("Inserting place ID: " + placeId + " into itinerary ID: " + itineraryId); // Log the action
+            SqlRowSet result = jdbcTemplate.queryForRowSet(insertItineraryLandmarkSql, itineraryId, placeId);
+
             if (result.next()) {
                 return result.getInt("itinerary_id");
             } else {
@@ -137,6 +149,8 @@ public class JdbcItineraryDao implements ItineraryDao {
             throw new DaoException("Landmark not added to itinerary: " + e.getMessage());
         }
     }
+
+
 
 
     @Override

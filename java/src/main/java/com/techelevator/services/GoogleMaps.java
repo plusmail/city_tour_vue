@@ -44,8 +44,8 @@ public class GoogleMaps {
                 .header("Content-Type", "application/json")
                 .header("X-Goog-Api-Key", API_KEY)
                 .header("X-Goog-FieldMask", "displayName," +
-                        "currentOpeningHours,accessibilityOptions,formattedAddress," +
-                        "location,subDestinations,types,priceLevel,rating")
+                        "currentOpeningHours,accessibilityOptions," +
+                        "formattedAddress,location,subDestinations,types,priceLevel,rating,photos")
                 .GET()
                 .build();
         try {

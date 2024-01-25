@@ -17,11 +17,17 @@ export default {
     return {
       items: [
         {
-          label: "Home",
+          label: "Search",
           command: () => {
-            this.$router.push({ name: "home" });
-            
+            this.$router.push({ name: "search" });
           },
+        },
+        {
+          label: "Itinerary",
+          command: () => {
+            this.$router.push({ name: "itinerary" });
+          },
+          visible: this.$store.state.token !== "",
         },
         {
           label: "Logout",
@@ -36,20 +42,7 @@ export default {
             this.$router.push({ name: "login" });
           },
           visible: this.$store.state.token === "",
-        },
-        {
-          label: "Search",
-          command: () => {
-            this.$router.push({ name: "search" });
-          },
-        },
-        {
-          label: "Itinerary",
-          command: () => {
-            this.$router.push({ name: "itinerary" });
-          },
-          visible: this.$store.state.token !== "",
-        },
+        }
       ],
     };
   },

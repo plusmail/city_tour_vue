@@ -10,7 +10,7 @@ export default {
     return axios.post(BASE_URL + "create", itinerary);
   },
   updateItinerary(itinerary) {
-    return axios.post(BASE_URL + "update", itinerary); // Change to PUT for update
+    return axios.put(BASE_URL + "update", itinerary); // Change to PUT for update
   },
   deleteItinerary(itineraryId) {
     return axios.post(BASE_URL + `delete?itinerary_id=${itineraryId}`)// Change to DELETE for delete
