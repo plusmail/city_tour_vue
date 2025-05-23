@@ -1,20 +1,19 @@
 <template>
   <ToastService/>
-  <Toast ref="toast" />
-  <div v-if="message.text" class="message" 
-         :class="{'message-success': message.type === 'success', 
+  <Toast ref="toast"/>
+  <div v-if="message.text" class="message"
+       :class="{'message-success': message.type === 'success',
                   'message-error': message.type === 'error'}">
-      {{ message.text }}
-    </div>
-                <CreateItinerary/>
-                <EditItinerary/>
-    <ItineraryLandmarks/>
+    {{ message.text }}
+  </div>
+  <CreateItinerary/>
+  <EditItinerary/>
+  <ItineraryLandmarks/>
 </template>
 
-  
-  
+
 <script>
-import { ref, reactive } from "vue";
+import {ref, reactive} from "vue";
 import ItineraryService from "../services/ItineraryService";
 import LandmarkService from "../services/LandmarkService";
 import EditItinerary from '../components/EditItinerary.vue';
@@ -41,8 +40,8 @@ export default {
     const selectedLandmarks = ref([]);
     const createdItineraryId = ref(null);
     const isLoading = ref(false);
-    const message = reactive({ text: "", type: "" });
-    const errors = reactive({ name: "", date: "" });
+    const message = reactive({text: "", type: ""});
+    const errors = reactive({name: "", date: ""});
     const itineraries = ref([]);
     const selectedItinerary = ref();
     const selectedPlaceId = ref(null);
@@ -76,7 +75,7 @@ export default {
         console.error("Error fetching landmarks:", error);
       }
     };
-    
+
     fetchItineraryLandmarks();
 
     const fetchLandmarks = async () => {
@@ -109,25 +108,35 @@ export default {
     fetchItineraries();
 
     const createItinerary = async (itineraryData) => {
-  if (!validateForm()) return;
-  isLoading.value = true;
-  console.log(itineraryData);
-  try {
-    const response = await ItineraryService.createItinerary(itineraryData);
-    createdItineraryId.value = response.data;
-    this.$toast.add({severity:'success', summary: 'Success', detail: 'Itinerary created successfully.', life: 3000});
-    fetchItineraries();
-  } catch (error) {
-    this.$toast.add({severity:'error', summary: 'Error', detail: `Error creating itinerary: ${error.message}`, life: 5000});
-  } finally {
-    isLoading.value = false;
-  }
-};
+      if (!validateForm()) return;
+      isLoading.value = true;
+      console.log(itineraryData);
+      try {
+        const response = await ItineraryService.createItinerary(itineraryData);
+        createdItineraryId.value = response.data;
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Itinerary created successfully.',
+          life: 3000
+        });
+        fetchItineraries();
+      } catch (error) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: `Error creating itinerary: ${error.message}`,
+          life: 5000
+        });
+      } finally {
+        isLoading.value = false;
+      }
+    };
 
 
-const editItinerary = async (itinerary) => {
-  if (!validateForm()) return;
-  isLoading.value = true;
+    const editItinerary = async (itinerary) => {
+      if (!validateForm()) return;
+      isLoading.value = true;
 
 // let data = {
 //     startDate: "2024-01-01"
@@ -135,84 +144,92 @@ const editItinerary = async (itinerary) => {
 
 // let key = "startDate"
 // data[key] = "2024-01-01"
-  console.log(itinerary)
+      console.log(itinerary)
 
-  try {
-    // const editedItinerary = {
-    //   ...itinerary,
-    //   eventDate: formatDate(itineraryDate.value)
-    // };
+      try {
+        // const editedItinerary = {
+        //   ...itinerary,
+        //   eventDate: formatDate(itineraryDate.value)
+        // };
 
-    // await ItineraryService.updateItinerary(itinerary.itineraryId, editedItinerary);
-    await ItineraryService.updateItinerary(itinerary);
+        // await ItineraryService.updateItinerary(itinerary.itineraryId, editedItinerary);
+        await ItineraryService.updateItinerary(itinerary);
 
-    toast.value.add({ severity: 'success', summary: 'Success', detail: 'Itinerary updated successfully.', life: 3000 });
-  } catch (error) {
-    console.error("An error occurred while updating the itinerary:", error);
-    let detail = "Error updating itinerary. ";
+        toast.value.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Itinerary updated successfully.',
+          life: 3000
+        });
+      } catch (error) {
+        console.error("An error occurred while updating the itinerary:", error);
+        let detail = "Error updating itinerary. ";
 
-    if (error.response) {
-      console.error("Error data:", error.response.data);
-      console.error("Error status:", error.response.status);
-      console.error("Error headers:", error.response.headers);
-      detail += `The server responded with a status code of ${error.response.status}.`;
-    } else if (error.request) {
-      console.error("No response received:", error.request);
-      detail += "No response was received from the server.";
-    } else {
-      console.error("Error message:", error.message);
-      detail += error.message;
-    }
+        if (error.response) {
+          console.error("Error data:", error.response.data);
+          console.error("Error status:", error.response.status);
+          console.error("Error headers:", error.response.headers);
+          detail += `The server responded with a status code of ${error.response.status}.`;
+        } else if (error.request) {
+          console.error("No response received:", error.request);
+          detail += "No response was received from the server.";
+        } else {
+          console.error("Error message:", error.message);
+          detail += error.message;
+        }
 
-    toast.value.add({ severity: 'error', summary: 'Error', detail: detail, life: 5000 });
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-
-
-const deleteItinerary = async (itineraryId) => {
-  if (confirm("Are you sure you want to delete this itinerary?")) {
-    isLoading.value = true;
-    try {
-      await ItineraryService.deleteItinerary(itineraryId);
-      toast.value.add({ severity: 'success', summary: 'Success', detail: 'Itinerary deleted successfully.', life: 3000 });
-    } catch (error) {
-      console.error("An error occurred while deleting the itinerary:", error);
-      let detail = "Error deleting itinerary. ";
-
-      if (error.response) {
-        console.error("Error data:", error.response.data);
-        console.error("Error status:", error.response.status);
-        console.error("Error headers:", error.response.headers);
-        detail += `The server responded with a status code of ${error.response.status}.`;
-      } else if (error.request) {
-        console.error("No response received:", error.request);
-        detail += "No response was received from the server.";
-      } else {
-        console.error("Error message:", error.message);
-        detail += error.message;
+        toast.value.add({severity: 'error', summary: 'Error', detail: detail, life: 5000});
+      } finally {
+        isLoading.value = false;
       }
+    };
 
-      toast.value.add({ severity: 'error', summary: 'Error', detail: detail, life: 5000 });
-    } finally {
-      isLoading.value = false;
-    }
-  }
-};
 
+    const deleteItinerary = async (itineraryId) => {
+      if (confirm("Are you sure you want to delete this itinerary?")) {
+        isLoading.value = true;
+        try {
+          await ItineraryService.deleteItinerary(itineraryId);
+          toast.value.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Itinerary deleted successfully.',
+            life: 3000
+          });
+        } catch (error) {
+          console.error("An error occurred while deleting the itinerary:", error);
+          let detail = "Error deleting itinerary. ";
+
+          if (error.response) {
+            console.error("Error data:", error.response.data);
+            console.error("Error status:", error.response.status);
+            console.error("Error headers:", error.response.headers);
+            detail += `The server responded with a status code of ${error.response.status}.`;
+          } else if (error.request) {
+            console.error("No response received:", error.request);
+            detail += "No response was received from the server.";
+          } else {
+            console.error("Error message:", error.message);
+            detail += error.message;
+          }
+
+          toast.value.add({severity: 'error', summary: 'Error', detail: detail, life: 5000});
+        } finally {
+          isLoading.value = false;
+        }
+      }
+    };
 
 
     const addLandmarksToItinerary = async () => {
       if (!createdItineraryId.value) return;
       isLoading.value = true;
-      
+
       try {
         for (const landmark of selectedLandmarks.value) {
           await ItineraryService.addLandmarkToItinerary(
-            createdItineraryId.value,
-            landmark.id
+              createdItineraryId.value,
+              landmark.id
           );
         }
         message.text = "Landmarks added to itinerary successfully.";
@@ -253,15 +270,12 @@ const deleteItinerary = async (itineraryId) => {
 </script>
 
 
-  
-  
-  
-
-  <style scoped>
+<style scoped>
 .itinerary-container h1 i,
 .landmarks-section h2 i {
   margin-right: 0.5rem;
 }
+
 .error-message {
   color: red;
   font-size: 0.8em;

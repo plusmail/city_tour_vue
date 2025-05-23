@@ -1,5 +1,6 @@
 package com.techelevator.dao;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -9,6 +10,8 @@ import com.techelevator.model.account.RegisterUserDto;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -74,11 +77,21 @@ public class JdbcUserDao implements UserDao {
     @Override
     public User createUser(RegisterUserDto user) {
         User newUser = null;
-        String insertUserSql = "INSERT INTO users (username, password_hash, role) values (?, ?, ?) RETURNING user_id";
+        String insertUserSql = "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
         String password_hash = new BCryptPasswordEncoder().encode(user.getPassword());
         String ssRole = user.getRole().toUpperCase().startsWith("ROLE_") ? user.getRole().toUpperCase() : "ROLE_" + user.getRole().toUpperCase();
+
         try {
-            int newUserId = jdbcTemplate.queryForObject(insertUserSql, int.class, user.getUsername(), password_hash, ssRole);
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(insertUserSql, new String[] {"user_id"});
+                ps.setString(1, user.getUsername());
+                ps.setString(2, password_hash);
+                ps.setString(3, ssRole);
+                return ps;
+            }, keyHolder);
+
+            int newUserId = keyHolder.getKey().intValue();
             newUser = getUserById(newUserId);
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
@@ -87,16 +100,13 @@ public class JdbcUserDao implements UserDao {
         }
         return newUser;
     }
-
     public int addItinerary(int userId, int itineraryId) {
-        String sql = "INSERT INTO users_itinerary (user_id, itinerary_id) VALUES (?, ?) RETURNING user_id;";
+        String sql = "INSERT INTO users_itinerary (user_id, itinerary_id) VALUES (?, ?)";
 
         try {
-            // Using queryForObject for better handling of expected single result
-            Integer resultUserId = jdbcTemplate.queryForObject(sql, new Object[] {userId, itineraryId}, Integer.class);
-
-            if (resultUserId != null) {
-                return resultUserId;
+            int rowsAffected = jdbcTemplate.update(sql, userId, itineraryId);
+            if (rowsAffected > 0) {
+                return userId;
             } else {
                 throw new DaoException("Itinerary not added to user");
             }
@@ -108,6 +118,7 @@ public class JdbcUserDao implements UserDao {
             throw new DaoException("Itinerary not added to user: " + e.getMessage(), e);
         }
     }
+
 
     public void deleteItinerary(int itineraryId) {
         String sql = "delete from users_itinerary where itinerary_id = ?;";

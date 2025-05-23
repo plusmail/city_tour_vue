@@ -1,6 +1,6 @@
 package com.techelevator.controller;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.account.LoginDto;
@@ -38,12 +38,24 @@ public class AuthenticationController {
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
 
+        System.out.println("loginDto: " + loginDto);
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.createToken(authentication, false);
+        System.out.println("authenticationToken: " + authenticationToken);
+        String jwt= null;
+        try {
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            System.out.println("authentication: " + authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            jwt = tokenProvider.createToken(authentication, false);
+            System.out.println("jwt-> "+ jwt);
+            // 나머지 처리
+        } catch (Exception e) {
+            e.printStackTrace(); // 어디서 실패하는지 정확히 확인
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials.");
+        }
+
 
         User user;
         try {
@@ -61,7 +73,9 @@ public class AuthenticationController {
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public void register(@Valid @RequestBody RegisterUserDto newUser) {
         try {
+            System.out.println(newUser.toString());
             User user = userDao.createUser(newUser);
+            System.out.println(user.getUsername());
             if (user == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User registration failed.");
             }
